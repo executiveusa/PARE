@@ -108,7 +108,7 @@ describe('defaultScenarioPluginIdForKind', () => {
       prototype: 'example-web-prototype',
       deck:      'example-simple-deck',
       template:  'od-new-generation',
-      brand:     'od-new-generation',
+      brand:     'pare-one-hands',
       image:     'od-media-generation',
       video:     'od-media-generation',
       audio:     'od-media-generation',
@@ -188,11 +188,9 @@ describe('defaultScenarioPluginIdForKind', () => {
     )).toBeNull();
   });
 
-
-
-
-  it('exposes the hidden free-form Home fallback plugin separately from kind defaults', () => {
-    expect(DEFAULT_UNSELECTED_SCENARIO_PLUGIN_ID).toBe('od-default');
+  it('exposes the hidden PARÉ free-form operator separately from surface defaults', () => {
+    expect(DEFAULT_UNSELECTED_SCENARIO_PLUGIN_ID).toBe('pare-one-hands');
+    expect(DEFAULT_SCENARIO_PLUGIN_BY_KIND.brand).toBe('pare-one-hands');
     expect(DEFAULT_SCENARIO_PLUGIN_BY_KIND.other).toBe('od-new-generation');
   });
 });
