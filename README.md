@@ -2,86 +2,49 @@
 
 # PARÉ
 
-### Brand systems, reduced to what matters.
+### Remove what does not serve the idea.
 
-**An open-source design operating system for humans and agents.**
+**Open-source design software for people who want the outcome without carrying the machinery.**
 
-[Studio](https://pauli-para.netlify.app/) · [Landing experience](https://pauli-para.netlify.app/pare-preview/) · [Product requirements](docs/pare/PRD.md) · [Deployment](docs/pare/DEPLOYMENT.md)
+[Public experience](https://pauli-para.netlify.app/pare-preview/) · [Studio](https://pauli-para.netlify.app/) · [Architecture](docs/pare/PRD.md) · [Deployment](docs/pare/DEPLOYMENT.md)
 
 </div>
 
 ---
 
-## Why PARÉ
+## The concept
 
 **pare** /per/  
 *verb* — to reduce by removing what is unnecessary.
 
-PARÉ applies that principle to design software itself.
+PARÉ applies that rule to the product itself.
 
-Most creative systems grow by addition: more panels, more models, more menus, more prompts, more dashboards, more layers between the person and the work. PARÉ starts from the opposite direction.
+A person should be able to arrive with an outcome:
 
-**Remove what does not serve the idea. Keep what helps the work become clearer, stronger, more useful, and easier to own.**
+> Build the brand.
 
-The philosophy is close to the Saint-Exupéry principle that a thing approaches perfection when there is nothing unnecessary left to remove.
+> Turn this brief into three real directions.
 
-That is not only the visual language of PARÉ. It is the operating model.
+> Audit this page and fix the largest gap.
 
-- strategy before styling;
-- outcomes before infrastructure choices;
-- evidence before claims;
-- files before lock-in;
-- human judgment where judgment matters;
-- automation where repetition does not;
-- fewer surfaces, with more capability underneath them.
+PARÉ handles the route underneath: project context, skills, agent choice, creation, critique, evidence, approvals and delivery.
 
-PARÉ is designed to feel simple to the person using it while remaining powerful enough for serious agent-driven work behind the interface.
+The interface does not need to expose all of that at once.
+
+**Lead with the outcome. Reveal complexity only when it helps.**
 
 ---
 
-## What PARÉ is
+## The Studio
 
-PARÉ is an **installable, owner-controlled brand and design operating environment** built on the open-source OpenDesign runtime.
-
-It keeps the strongest parts of that foundation — chat, live artifacts, design systems, skills, coding-agent adapters, CLI, MCP, filesystem-backed projects, and the local daemon — and adds a governed Pauli operating layer around them:
-
-- **One Hands** — the human-facing operator that turns natural requests into routed work;
-- **ICM** — a portable project-memory and filesystem architecture;
-- **PARÉ skills** — brand discovery, creative direction, subtraction, humanization, SEO, SVG engineering, delivery, and more;
-- **Guardian / Gauntlet / Proof** — independent critique, validation, and completion gates;
-- **human approvals** — explicit gates for consequential creative, publishing, production, legal, and irreversible decisions;
-- **sovereign deployment** — the UI can live on a web host while the privileged runtime and project truth stay on infrastructure you control.
-
-PARÉ is **not** a new agent framework and it is **not** a closed AI design SaaS wrapped around a proprietary database.
-
-It is the governed operating layer around a real design runtime.
-
----
-
-## The core experience
-
-A person should be able to open PARÉ and say:
-
-> Build the official brand for this company.
-
-or:
-
-> Make this direction feel more institutional and less startup.
-
-or:
-
-> Audit this landing page and fix the largest gap.
-
-PARÉ handles the machinery underneath.
-
-The human experience is intentionally small:
+The primary experience is intentionally small:
 
 ```text
 +---------------------------------------------------------------+
 | PARÉ                     Company / Project                    |
 +------------------------+--------------------------------------+
-| ONE HANDS              | LIVE CANVAS                          |
-| conversation           | HTML / SVG / deck / visual output   |
+| CONVERSATION           | LIVE CANVAS                          |
+| request / history      | HTML / SVG / deck / visual output   |
 | attachments            | responsive preview                  |
 | project context        | inspect / compare / refine           |
 | run progress           | files / artifact tabs               |
@@ -90,94 +53,44 @@ The human experience is intentionally small:
 +---------------------------------------------------------------+
 ```
 
-On mobile, the system reduces further:
+On a phone it reduces to:
 
 **Chat · Canvas · Project**
 
-The goal is not to hide capability. The goal is to hide **unnecessary complexity**.
+The Studio is the human surface. The project remains usable by machines through semantic interfaces.
 
 ---
 
-## One Hands
+## One Studio. Infinite possibilities.
 
-**One Hands** is the primary human-facing operator inside PARÉ.
+PARÉ does not depend on one execution engine.
 
-It is a routing and policy layer, not another agent runtime.
+Supported runtime paths include Codex, Claude Code, Gemini, OpenCode, Hermes, Pi, DeepSeek Harness and other compatible agent CLIs. BYOK and compatible model endpoints can be used where the runtime supports them.
 
-One Hands can:
+OpenCode remains named **OpenCode** because it is a real third-party runtime. PARÉ branding does not rename external tools.
 
-- inspect the active project;
-- understand the requested outcome;
-- assemble the smallest useful context;
-- route to the appropriate skill and available agent runtime;
-- create candidate work;
-- stream progress into the Studio;
-- request critique and validation;
-- repair bounded failures;
-- prepare previews, exports, and receipts;
-- stop when a real human decision is required.
-
-The user should not have to decide which internal tool, prompt chain, model provider, or filesystem path is necessary before asking for the work.
-
-**Ask for the outcome. PARÉ coordinates the sequence.**
+The product stays PARÉ. The engine can change.
 
 ---
 
-## One request. Many engines.
+## Your work stays yours
 
-PARÉ is runtime-neutral by design.
+**Your projects.**  
+**Your files.**  
+**Your agents.**  
+**Your infrastructure.**
 
-It reuses the agent adapters already supported by the underlying OpenDesign architecture and can work with compatible runtimes such as:
+Projects are folder-backed and portable. Strategy, assets, approvals and evidence do not have to live only inside a proprietary database.
 
-- Codex;
-- Claude Code;
-- Gemini;
-- OpenCode;
-- Hermes;
-- Pi;
-- DeepSeek Harness;
-- Cursor and other supported coding-agent CLIs;
-- OpenAI-compatible endpoints through BYOK where appropriate.
+You can host PARÉ yourself or use managed infrastructure when available. Hosted use is convenience, not ownership.
 
-The operating system stays consistent even when the execution engine changes.
-
-That separation matters: **your design process should not belong to one model vendor.**
+No lock-in. Export the project and its data.
 
 ---
 
-## Humans and agents use the same project
+## Project structure
 
-PARÉ is designed so the visual Studio is not the only way into the system.
-
-A human can work through the browser or desktop interface while an external agent can operate on the same project through machine interfaces.
-
-Canonical machine doors include:
-
-```text
-PARÉ Studio UI
-      │
-      ├── od CLI
-      ├── MCP
-      ├── daemon HTTP /api/*
-      └── authorized filesystem access
-              │
-              ▼
-        SAME PROJECT
-        SAME FILES
-        SAME RECEIPTS
-```
-
-This makes PARÉ useful as both a product and an infrastructure layer.
-
-Cosmos, Codex, Claude, Gemini, OpenCode, Hermes, Pi, or another approved orchestrator should be able to call PARÉ without pretending to be PARÉ.
-
----
-
-## Projects are portable by design
-
-PARÉ uses folder-backed projects. The project filesystem is the durable source of truth.
-
-A typical governed brand project looks like:
+A governed project can use the ICM layout:
 
 ```text
 project/
@@ -193,24 +106,19 @@ project/
 └── _ledger/
 ```
 
-The rules are intentionally simple:
+The rules are simple:
 
 - one fact has one canonical home;
 - one folder has one job;
-- context is loaded only when needed;
-- strategy explains *why*;
-- `DESIGN.md` explains *how the visual system behaves*;
+- context is loaded when needed;
+- strategy explains why;
+- `DESIGN.md` explains how the selected visual system behaves;
 - approvals and evaluations leave receipts;
-- generated indexes are not treated as truth;
-- no proprietary database is the only copy of the project.
-
-This is the ICM layer inside PARÉ.
+- generated indexes are not treated as project truth.
 
 ---
 
-## The PARÉ brand workflow
-
-For governed identity and rebrand work, PARÉ follows a deliberate sequence:
+## From request to official work
 
 ```text
 intake
@@ -219,278 +127,144 @@ strategy
   ↓
 governing idea
   ↓
-creative territories
+creative directions
   ↓
-distinctiveness
+human selection
   ↓
-HUMAN TERRITORY SELECTION
-  ↓
-identity
-  ↓
-behavior
+design
   ↓
 application stress test
   ↓
-commercial desirability
+independent critique
   ↓
-Guardian
+validation
   ↓
-Gauntlet
-  ↓
-Proof
+proof
   ↓
 delivery / publish
 ```
 
-PARÉ can research, generate, critique, repair, validate, and prepare.
-
-It does **not** silently approve itself.
-
-Human approval remains explicit for materially different creative directions, final canonical identity, external publishing, production promotion, irreversible actions, and legal/licensing/trademark judgment.
-
----
-
-## Draft is not Official
-
-PARÉ uses explicit status language because generated work and approved work are not the same thing.
+PARÉ can create, inspect, critique, repair and prepare. It does not silently promote its own work to official status.
 
 | State | Meaning |
 |---|---|
-| **Draft** | Generated, not approved or canonical |
+| **Draft** | Generated, not approved |
 | **Candidate** | Creator checks passed |
-| **Verified** | Evidence/validation passed |
-| **Approved** | Human or required gate accepted it |
+| **Verified** | Evidence checks passed |
+| **Approved** | Required human/gate accepted it |
 | **Canonical** | Approved project truth |
-| **Official** | Canonical + validated + approved package |
+| **Official** | Canonical, validated package |
 | **Preview** | Non-production external view |
 | **Published** | Externally released |
 | **Production** | Live authoritative system |
 
-AI alone cannot make work **Official**.
-
 ---
 
-## Design philosophy
+## Human and machine access
 
-The public PARÉ experience follows the same rule as the product.
+The visual interface is one door into the project, not the project itself.
 
-The landing page begins with a typographic field. The word **PARÉ** is hidden inside noise. As the visitor scrolls, unnecessary letters recede until only the meaningful word remains.
+```text
+PARÉ Studio
+    │
+    ├── od CLI
+    ├── MCP
+    ├── authenticated daemon API
+    └── authorized filesystem access
+             │
+             ▼
+       SAME PROJECT
+       SAME FILES
+       SAME RECEIPTS
+```
 
-That interaction is not decoration. It is the thesis:
-
-**noise → recognition → meaning → product**
-
-The visual laws are equally strict:
-
-- typography carries the idea;
-- negative space is structural;
-- motion reveals meaning rather than decorating the screen;
-- no generic SaaS hero;
-- no feature-card wall;
-- no gradient-blob filler;
-- no model-logo strip as a substitute for product value;
-- mobile preserves the concept rather than shrinking desktop;
-- generated media is added only when the story actually needs it.
-
-See [`docs/pare/design/LANDING_STORY_LOCK.md`](docs/pare/design/LANDING_STORY_LOCK.md).
+Technical compatibility names such as the `od` CLI, `@open-design/*` packages, legacy storage keys and protocol contracts remain where changing them would break the runtime. They are implementation details, not the user-facing product name.
 
 ---
 
 ## Architecture
 
-PARÉ separates the browser-facing experience from the privileged execution plane.
+The browser and the privileged execution plane are separate on purpose.
 
 ```text
-                        PARÉ
-                         │
-          ┌──────────────┴──────────────┐
-          │                             │
-      WEB / STUDIO                 MACHINE ACCESS
-      Netlify/Vercel             MCP · API · CLI
-          │                             │
-          └──────────── HTTPS ──────────┘
-                         │
-                         ▼
-                OWNER-CONTROLLED VPS
-                         │
-                    PARÉ daemon
-                         │
-          ┌──────────────┼──────────────┐
-          │              │              │
-      One Hands      agent adapters     ICM
-          │              │              │
-          └────── same project/files ───┘
+browser / desktop
+       │
+       ▼
+   PARÉ Studio
+       │
+ authenticated HTTPS
+       │
+       ▼
+ persistent daemon
+       │
+ ┌─────┼──────────────┐
+ │     │              │
+files  agent CLIs   runtime state
+ │     │              │
+ └──── same project ──┘
 ```
 
-The web host is replaceable.
+The web surface can run on Netlify, Vercel or another host. Long-running sessions, process spawning, privileged filesystem access, exports and server credentials belong on a persistent owner-controlled machine or managed runtime.
 
-The daemon owns the responsibilities that actually require a persistent machine:
-
-- long-running agent sessions;
-- process spawning and CLI detection;
-- streaming;
-- filesystem access;
-- artifact/export generation;
-- persistent runtime state;
-- server-side credentials.
-
-The browser host should never become the canonical project store or privileged agent runtime.
+The browser does not get raw shell authority or server secrets.
 
 ---
 
-## Open source, not hostageware
+## Public experience
 
-PARÉ is intended to remain genuinely useful when self-hosted.
+The landing page performs the same idea as the product.
 
-The open-source edition is not a deliberately crippled lead-generation shell.
+A field of letters contains **PARÉ**. Scrolling removes what does not belong until the word resolves. The definition, Saint-Exupéry principle, complexity field and final Studio entrance continue the same subtraction language.
 
-You should be able to:
+Motion must communicate change. If motion is only decoration, remove it.
 
-- run it yourself;
-- bring your own supported agents and model credentials;
-- keep projects as ordinary files;
-- use CLI/MCP/API interfaces;
-- move your work to infrastructure you control.
+The current public surfaces are:
 
-A future **PARÉ Cloud** can add convenience — hosted runtime, accounts, teams, encrypted secret management, managed execution, collaboration, usage metering, hosted MCP, and subscriptions — without making cloud membership the condition for owning your work.
-
-**Hosted should mean easier, not captive.**
-
----
-
-## ChatGPT, Claude, and external assistants
-
-A major direction for PARÉ is to expose the design operating system as a real external service, not merely as a folder of prompts.
-
-The target experience is simple:
-
-> Use PARÉ to build the brand system for this company.
-
-An assistant should be able to call PARÉ through scoped semantic tools, operate on a real project, return artifacts and validation results, pause for approvals, and let the same project open visually inside PARÉ Studio.
-
-The same runtime should support:
-
-- the full Studio;
-- self-hosted use;
-- remote MCP;
-- authenticated API access;
-- ChatGPT integrations where supported;
-- Claude integrations where supported;
-- orchestrators such as Cosmos.
-
-No second backend should be required just to become an integration.
-
----
-
-## Development principles
-
-PARÉ follows a few non-negotiable engineering rules.
-
-### Reuse before addition
-
-Before adding another service, framework, database, agent runtime, or abstraction, ask whether the capability already exists in the platform.
-
-### Subtract before polishing
-
-If a component, dependency, piece of copy, or workflow step does not materially improve the outcome, remove it.
-
-### Truth stays portable
-
-Runtime/session state may live in databases. Canonical strategy, assets, approvals, and project truth remain exportable files.
-
-### No fake success
-
-A running container is not the same as a working product. A generated artifact is not the same as approved work. A deploy is not done until it is verified.
-
-### Creator and critic are different jobs
-
-Serious design work runs through independent critique and the Gauntlet rather than letting the builder grade itself.
-
----
-
-## Repository map
-
-```text
-apps/
-├── web/                 # PARÉ / OpenDesign product UI
-├── daemon/              # privileged persistent runtime
-└── landing-page/        # standalone marketing surface where used
-
-packages/                # shared contracts, components, tools
-plugins/                 # scenario/plugin definitions
-skills/                  # filesystem-based skills, including PARÉ skills
-
-docs/pare/
-├── PRD.md               # product architecture and acceptance criteria
-├── DEPLOYMENT.md        # web / VPS deployment model
-├── SERVER_RUNBOOK.md    # server operations when present
-├── SECRETS.md           # secret/bootstrap model when present
-└── design/              # locked design directions and evidence
-```
-
-Technical `@open-design/*` namespaces remain where they are part of the upstream architecture. PARÉ does not rename internals merely for cosmetic rebranding.
-
----
-
-## Current public surfaces
-
-- **Studio / current web build:** https://pauli-para.netlify.app/
-- **PARÉ landing experience:** https://pauli-para.netlify.app/pare-preview/
+- **Landing:** https://pauli-para.netlify.app/pare-preview/
+- **Studio:** https://pauli-para.netlify.app/
 - **Repository:** https://github.com/executiveusa/PARE
-
-The public landing experience and Studio runtime can evolve independently. The design layer should never require rewriting the execution engine.
 
 ---
 
 ## Run locally
 
-PARÉ inherits the OpenDesign monorepo and local-first runtime model.
-
-Start by reading:
+Start with:
 
 - [`QUICKSTART.md`](QUICKSTART.md)
 - [`docs/pare/PRD.md`](docs/pare/PRD.md)
 - [`docs/pare/DEPLOYMENT.md`](docs/pare/DEPLOYMENT.md)
 
-Typical repository setup uses the existing pnpm workspace and the `od` daemon/CLI path. Do not expose the daemon unauthenticated to the public internet.
+The monorepo uses the existing pnpm workspace and `od` CLI/daemon compatibility path.
 
-For external agents, prefer semantic CLI/MCP/API operations over automating the React interface.
+Do not expose the privileged daemon to the public internet without authentication.
 
 ---
 
-## Security model
+## Security
 
-PARÉ treats the daemon as privileged infrastructure.
-
-- never expose the daemon publicly without authentication;
-- never commit provider credentials;
-- never send server secrets to browser JavaScript;
-- scope filesystem access to the active project/workspace;
-- preserve sandbox and SSRF protections;
-- separate read/write/publish/admin authority;
-- record approval and consequential machine actions;
-- require explicit authority for publish, production, irreversible, and legal-sensitive actions.
+- no provider secrets in browser JavaScript;
+- no raw public shell execution;
+- project filesystem access is scoped;
+- publish, production and irreversible actions require the appropriate approval;
+- sandbox and SSRF boundaries stay intact;
+- consequential actions leave evidence.
 
 ---
 
 ## Upstream and license
 
-PARÉ is built from and remains indebted to the open-source **OpenDesign** project and its agent-native design runtime.
+PARÉ is derived from the Apache-2.0 **OpenDesign** project. The upstream name remains in attribution, notices and technical compatibility surfaces where required.
 
-Upstream project: [`nexu-io/open-design`](https://github.com/nexu-io/open-design)
+Upstream: [`nexu-io/open-design`](https://github.com/nexu-io/open-design)
 
-PARÉ preserves upstream technical architecture and attribution where applicable rather than pretending the underlying runtime was created from scratch.
-
-Licensed under **Apache-2.0**. See [`LICENSE`](LICENSE) and existing upstream notices for details.
+License: [`Apache-2.0`](LICENSE)
 
 ---
 
 <div align="center">
 
-## PARÉ
+# PARÉ
 
-**Remove what does not serve the idea.**
-
-Open source. Owner controlled. Agent compatible.
+**Lead with the outcome.**
 
 </div>
