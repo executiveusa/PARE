@@ -24,9 +24,9 @@ A person can arrive with an outcome:
 
 > Audit this page and fix the largest gap.
 
-PARÉ handles project context, skills, runtime choice, creation, critique, evidence, approvals, and delivery underneath the request.
+PARÉ handles project context, creation, critique, evidence, approvals, and delivery underneath the request.
 
-The interface reveals that machinery only when it helps the work.
+The interface reveals machinery only when it helps the work.
 
 ---
 
@@ -55,11 +55,11 @@ The Studio is one door into the project. Machines use semantic interfaces agains
 
 ## Runtime-neutral
 
-PARÉ can route work through supported runtimes such as Codex, Claude Code, Gemini, OpenCode, Hermes, Pi, DeepSeek Harness, or compatible endpoints.
-
-OpenCode remains named **OpenCode** because it is a real third-party runtime.
+PARÉ can route work through supported local, hosted, or external execution engines without changing the product experience.
 
 **PARÉ is the product. The runtime is replaceable.**
+
+Runtime names appear only where someone is actually selecting, installing, diagnosing, or configuring that runtime.
 
 ---
 
@@ -150,9 +150,9 @@ PARÉ can create, inspect, critique, repair, validate, and prepare. It does not 
 ```text
 PARÉ Studio
     │
-    ├── od CLI
+    ├── CLI
     ├── MCP
-    ├── authenticated daemon API
+    ├── authenticated runtime API
     └── authorized filesystem access
              │
              ▼
@@ -161,7 +161,7 @@ PARÉ Studio
        SAME RECEIPTS
 ```
 
-Compatibility names such as the `od` CLI, `@open-design/*` packages, legacy storage keys, and protocol contracts remain where changing them would break the runtime. They are implementation details, not the user-facing product name.
+Legacy package namespaces, storage keys, protocol contracts, and CLI compatibility identifiers remain internally where changing them would break existing behavior. They are implementation details, not product branding.
 
 ---
 
@@ -209,7 +209,7 @@ Start with:
 - [`docs/pare/PRD.md`](docs/pare/PRD.md)
 - [`docs/pare/DEPLOYMENT.md`](docs/pare/DEPLOYMENT.md)
 
-The monorepo uses the existing pnpm workspace and `od` CLI/daemon compatibility path.
+The monorepo retains compatibility paths required by the underlying runtime.
 
 Do not expose the privileged runtime publicly without authentication.
 
@@ -217,8 +217,6 @@ Do not expose the privileged runtime publicly without authentication.
 
 ## Upstream and license
 
-PARÉ is derived from the Apache-2.0 **OpenDesign** project. The upstream name remains only where attribution, notices, or technical compatibility require it.
+PARÉ is derived from an Apache-2.0 upstream project. Attribution, notices, and technical compatibility names remain where required; they are not presented as PARÉ product branding.
 
-Upstream: [`nexu-io/open-design`](https://github.com/nexu-io/open-design)
-
-License: [`Apache-2.0`](LICENSE)
+See [`LICENSE`](LICENSE) and the repository history for upstream attribution and notices.
