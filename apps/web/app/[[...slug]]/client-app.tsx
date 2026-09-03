@@ -25,13 +25,12 @@ installWebObservability();
 // shell HTML the daemon can serve as the SPA fallback.
 const App = dynamic(() => import('../../src/App').then((m) => m.App), {
   ssr: false,
-  // Keeps the `od-loading-shell` class on the outer node: the white-screen
-  // detector filters this whole subtree out by that class when deciding
-  // whether the app really mounted (`src/observability/white-screen.ts`).
+  // Keep the compatibility class on the outer node: the white-screen detector
+  // excludes this boot shell while deciding whether the real app mounted.
   loading: () => (
     <div className="od-loading-shell">
       <MatrixLoader />
-      <span>Loading OpenDesign…</span>
+      <span>PARÉ</span>
     </div>
   ),
 });
