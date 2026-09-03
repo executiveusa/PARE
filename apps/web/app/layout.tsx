@@ -7,7 +7,8 @@ import '../src/index.css';
 import '../src/styles/home/index.css';
 
 export const metadata: Metadata = {
-  title: 'OpenDesign',
+  title: 'PARÉ Studio',
+  description: 'Brand systems, reduced to what matters. Owner-controlled brand and design software by Pauli Brand Studio.',
   icons: {
     icon: '/app-icon.png',
     apple: '/app-icon.png',
@@ -23,10 +24,11 @@ export const viewport: Viewport = {
  * carries the app's appearance — no flash of unstyled content.
  *
  * `data-theme` is pinned to `light` unconditionally, and deliberately OUTSIDE
- * the try/catch: OpenDesign ships light-only (product removed the theme
- * setting), and a stored `dark` / `system` from the old picker must never reach
- * the document. Every dark CSS rule is gated on the attribute being absent, so
- * a storage read that throws must still leave the attribute stamped.
+ * the try/catch: PARÉ keeps the upstream light-only product behavior, and a
+ * stored `dark` / `system` from the old picker must never reach the document.
+ * Every dark CSS rule is gated on the attribute being absent, so a storage read
+ * that throws must still leave the attribute stamped. The `open-design:config`
+ * key is intentionally retained as an internal compatibility namespace.
  * Keep the accent variable mix ratios in sync with `accentVars()` in
  * `src/state/appearance.ts`; this script cannot import application modules.
  */
