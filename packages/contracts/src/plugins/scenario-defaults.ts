@@ -16,10 +16,10 @@
 // the root cause of decks that overflow the 1080px canvas, mismatched
 // type scales, and "different aesthetic every turn" drift.
 //
-// Generic / catch-all kinds (template, other) keep od-new-generation,
-// which runs discovery → plan → generate → critique without a
-// surface-specific seed. Media kinds keep od-media-generation, which
-// dispatches through the media contract instead of emitting HTML.
+// PARÉ changes only the unselected/free-form route and durable brand route:
+// One Hands becomes the conversational operator while specialised surface
+// defaults remain intact. This keeps the fork's house workflow thin instead of
+// replacing Open Design's existing execution/runtime architecture.
 
 import type {
   ProjectKind,
@@ -31,7 +31,7 @@ import type { AppliedPluginSnapshot } from './apply.js';
 export type TaskKind = AppliedPluginSnapshot['taskKind'];
 
 // Plugin ids the kind/task-kind defaults can resolve to. Two tiers:
-//   1. `od-*` scenarios (under `plugins/_official/scenarios/`) — generic
+//   1. `od-*` / PARÉ scenarios (under `plugins/_official/scenarios/`) — generic
 //      routers / pipelines without per-surface templates.
 //   2. `example-*` scenarios (under `plugins/_official/examples/`) —
 //      specialised bundled skills that ship a seed template + layout
@@ -41,6 +41,7 @@ export type TaskKind = AppliedPluginSnapshot['taskKind'];
 // Kept as a string-literal union so a typo surfaces as a type error in
 // both the web shell and the daemon resolver.
 export type DefaultScenarioPluginId =
+  | 'pare-one-hands'
   | 'od-default'
   | 'od-new-generation'
   | 'od-media-generation'
@@ -56,7 +57,7 @@ export type DefaultScenarioPluginId =
   | 'example-webgl-experience';
 
 export const DEFAULT_UNSELECTED_SCENARIO_PLUGIN_ID =
-  'od-default' satisfies DefaultScenarioPluginId;
+  'pare-one-hands' satisfies DefaultScenarioPluginId;
 
 const AUTOMATIC_STRATEGY_TASK_PROFILE_BY_ROUTE_ID = {
   prototype: 'prototype',
@@ -130,7 +131,9 @@ export const DEFAULT_SCENARIO_PLUGIN_BY_KIND: Record<ProjectKind, DefaultScenari
   // "headline + subtitle + absolute footer" collision).
   deck:      'example-simple-deck',
   template:  'od-new-generation',
-  brand:     'od-new-generation',
+  // A durable brand project is the PARÉ house workflow. One Hands can still
+  // route specialised output work to the existing surface plugins afterward.
+  brand:     'pare-one-hands',
   image:     'od-media-generation',
   video:     'od-media-generation',
   audio:     'od-media-generation',
