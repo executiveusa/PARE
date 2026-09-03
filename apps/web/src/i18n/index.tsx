@@ -29,6 +29,7 @@ import { tr } from './locales/tr';
 import { th } from './locales/th';
 import { it } from './locales/it';
 import { getOpenDesignHost } from '@open-design/host';
+import { rebrandProductCopy } from './product-copy';
 import { LOCALES, type Dict, type Locale } from './types';
 
 export { LOCALES, LOCALE_LABEL } from './types';
@@ -66,6 +67,19 @@ const LS_KEY = 'open-design:locale';
 // the user changes their system language.
 const LS_SOURCE_KEY = 'open-design:locale-source';
 const MANUAL_LOCALE_SOURCE = 'manual';
+
+function renderProductCopy(
+  raw: string,
+  vars?: Record<string, string | number>,
+): string {
+  const interpolated = vars
+    ? raw.replace(/\{(\w+)\}/g, (_, name: string) => {
+        const value = vars[name];
+        return value == null ? `{${name}}` : String(value);
+      })
+    : raw;
+  return rebrandProductCopy(interpolated);
+}
 
 export function resolveSystemLocale(languages: readonly string[]): Locale | null {
   const supported = LOCALES as readonly string[];
@@ -105,14 +119,7 @@ export function tForLanguageTag(
   const locale = resolveSystemLocale([tag]);
   if (!locale) return null;
   const dict = DICTS[locale] ?? en;
-  return (key, vars) => {
-    const raw = dict[key] ?? en[key] ?? key;
-    if (!vars) return raw;
-    return raw.replace(/\{(\w+)\}/g, (_, name: string) => {
-      const v = vars[name];
-      return v == null ? `{${name}}` : String(v);
-    });
-  };
+  return (key, vars) => renderProductCopy(dict[key] ?? en[key] ?? key, vars);
 }
 
 // Read the OS locale the desktop host attached to its client descriptor.
@@ -182,14 +189,7 @@ const I18nContext = createContext<I18nContextValue | null>(null);
 const FALLBACK_I18N: I18nContextValue = {
   locale: 'en',
   setLocale: () => { },
-  t: (key, vars) => {
-    const raw = en[key] ?? key;
-    if (!vars) return raw;
-    return raw.replace(/\{(\w+)\}/g, (_, n: string) => {
-      const v = vars[n];
-      return v == null ? `{${n}}` : String(v);
-    });
-  },
+  t: (key, vars) => renderProductCopy(en[key] ?? key, vars),
 };
 
 interface ProviderProps {
@@ -238,12 +238,7 @@ export function I18nProvider({ initial, children }: ProviderProps) {
   const t = useCallback(
     (key: DictKey, vars?: Record<string, string | number>): string => {
       const dict = DICTS[locale] ?? en;
-      const raw = dict[key] ?? en[key] ?? key;
-      if (!vars) return raw;
-      return raw.replace(/\{(\w+)\}/g, (_, name: string) => {
-        const v = vars[name];
-        return v == null ? `{${name}}` : String(v);
-      });
+      return renderProductCopy(dict[key] ?? en[key] ?? key, vars);
     },
     [locale],
   );
