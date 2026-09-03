@@ -2,16 +2,16 @@
   "$schema": "https://open-design.ai/schemas/plugin.v1.json",
   "specVersion": "1.0.0",
   "name": "pare-one-hands",
-  "title": "PARÉ — One Hands",
+  "title": "PARÉ",
   "version": "0.1.0",
   "publishedAt": "2026-09-02T00:00:00Z",
-  "description": "PARÉ's default governed studio operator: natural-language outcome to ICM-backed strategy, design, validation and delivery using the existing Open Design runtime.",
+  "description": "Turn a natural-language outcome into scoped project work, visible artifacts, critique, proof and delivery inside PARÉ.",
   "license": "Apache-2.0",
   "author": {
     "name": "The Pauli Effect",
     "url": "https://github.com/executiveusa"
   },
-  "homepage": "https://github.com/executiveusa/PAULI-open-design/tree/main/plugins/_official/scenarios/pare-one-hands",
+  "homepage": "https://github.com/executiveusa/PARE/tree/main/plugins/_official/scenarios/pare-one-hands",
   "tags": [
     "scenario",
     "first-party",
@@ -91,7 +91,7 @@
     ],
     "useCase": {
       "query": {
-        "en": "Operate a durable brand/design project through PARÉ's ICM-backed workflow while keeping the existing Open Design chat, canvas and agent runtime."
+        "en": "Run a durable PARÉ project from request through visible artifact, validation and delivery while keeping project truth in portable files."
       },
       "exampleOutputs": []
     },
@@ -100,7 +100,7 @@
         "name": "prompt",
         "type": "text",
         "required": false,
-        "label": "What should One Hands build?",
+        "label": "What are we making?",
         "placeholder": "Build the official brand for…"
       }
     ]
