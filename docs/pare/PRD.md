@@ -6,7 +6,7 @@ Status: release candidate for ZTE-20260903-0007
 
 PARÉ is an owner-controlled design operating system.
 
-A person asks for an outcome. PARÉ turns that request into project work, keeps the work in ordinary files, routes execution through an available agent/runtime, shows the artifact, runs critique and proof, and stops when a real human decision is required.
+A person asks for an outcome. PARÉ turns that request into project work, keeps the work in ordinary files, routes execution through an available runtime, shows the artifact, runs critique and proof, and stops when a real human decision is required.
 
 The interface should feel smaller than the machinery beneath it.
 
@@ -110,11 +110,9 @@ AI alone cannot make work Official.
 
 PARÉ is runtime-neutral.
 
-It may use supported engines such as Codex, Claude Code, Gemini, OpenCode, Hermes, Pi, DeepSeek Harness, or compatible endpoints. These are execution choices, not product identity.
+Supported execution engines remain individually named only where a person is actually selecting, installing, diagnosing, or configuring them. Those names are runtime choices, not product identity.
 
 **PARÉ is the product. The runtime is replaceable.**
-
-OpenCode is a real third-party runtime name and remains OpenCode wherever the user is selecting, installing, diagnosing, or configuring that runtime.
 
 ## Machine access
 
@@ -122,9 +120,9 @@ External agents use semantic machine interfaces rather than clicking React contr
 
 Supported compatibility doors include:
 
-- `od` CLI;
+- CLI;
 - MCP;
-- authenticated daemon HTTP `/api/*`;
+- authenticated runtime HTTP/API;
 - authorized folder-backed filesystem access.
 
 All doors operate on the same project and should return structured results or receipts.
@@ -218,10 +216,10 @@ Netlify or Vercel may host the browser-facing Studio and public landing surface.
 
 ### Persistent runtime
 
-An owner-controlled VPS runs the privileged daemon/execution plane when PARÉ needs:
+An owner-controlled VPS runs the privileged execution plane when PARÉ needs:
 
 - long-running agent sessions;
-- process spawning and CLI detection;
+- process spawning and runtime detection;
 - persistent project files;
 - streaming;
 - artifact/export generation;
@@ -234,7 +232,7 @@ See `docs/pare/DEPLOYMENT.md`.
 
 ## Security
 
-- Never expose the privileged daemon publicly without authentication.
+- Never expose the privileged runtime publicly without authentication.
 - Never commit provider credentials.
 - Never send server secrets to browser JavaScript.
 - Scope filesystem access to the active project/workspace.
@@ -246,11 +244,13 @@ See `docs/pare/DEPLOYMENT.md`.
 
 The user-facing product name is **PARÉ**.
 
-Legacy product branding must not appear in rendered application copy, onboarding, dialogs, popovers, help text, invitations, loading states, or marketing surfaces.
+Legacy product branding must not appear in rendered application copy, onboarding, dialogs, popovers, help text, invitations, loading states, marketing surfaces, product metadata, or PARÉ-facing documentation.
 
-Compatibility internals are not renamed merely for appearance. Package namespaces, storage keys, API contracts, CLI compatibility names, and third-party runtime names remain stable where changing them would break the system or misrepresent another project.
+Runtime/vendor names may appear only where the user needs them to choose, configure, diagnose, or understand a real external dependency.
 
-This is a product rebrand, not a destructive protocol rename.
+Compatibility internals are not renamed merely for appearance. Package namespaces, storage keys, API contracts, CLI compatibility names, and protocol identifiers remain stable where changing them would break the system.
+
+This is an app-wide product rebrand, not a destructive protocol rename.
 
 ## Acceptance — human
 
@@ -284,7 +284,7 @@ A separate approved agent can:
 - a second project truth store;
 - mandatory cloud membership to own work;
 - public multi-tenant billing before the owner-use runtime is proven;
-- cosmetic renaming of compatibility identifiers that would break upstream behavior;
+- cosmetic renaming of compatibility identifiers that would break existing behavior;
 - making a serverless web host the privileged agent runtime.
 
 ## Definition of done
