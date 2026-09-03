@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import type { Metadata } from 'next';
 
 const studioUrl = '/';
 const repoUrl = 'https://github.com/executiveusa/PARE';
@@ -9,7 +10,7 @@ const letters = [
   ['Y','P','A','R','É','X','Z'],
   ['D','F','J','K','W','I','C'],
   ['S','M','O','L','Q','H','N'],
-];
+] as const;
 const target = new Set(['2-1','2-2','2-3','2-4']);
 const drifts = [
   ['-24px','-18px'],['18px','-28px'],['-14px','20px'],['26px','10px'],['-20px','26px'],['18px','18px'],['-28px','8px'],
@@ -17,7 +18,7 @@ const drifts = [
   ['-20px','-12px'],['0','0'],['0','0'],['0','0'],['0','0'],['20px','-14px'],['-16px','20px'],
   ['26px','-20px'],['-18px','16px'],['16px','24px'],['-24px','-12px'],['22px','18px'],['-12px','-24px'],['18px','14px'],
   ['-16px','22px'],['20px','-16px'],['-22px','-18px'],['18px','26px'],['-24px','10px'],['14px','-20px'],['24px','20px'],
-];
+] as const;
 
 const css = String.raw`
 :root{--pp:#f4f3ef;--ink:#11110f;--muted:rgba(17,17,15,.62);--line:rgba(17,17,15,.12);--dark:#0b0b0a;--light:#f4f3ef;--ease:cubic-bezier(.22,1,.36,1)}
@@ -37,7 +38,7 @@ const css = String.raw`
 
 const script = String.raw`(()=>{const root=document.querySelector('[data-pare-preview]');if(!root)return;const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;const scenes=[...root.querySelectorAll('[data-scroll-scene]')];const reveals=[...root.querySelectorAll('[data-reveal]')];const stageFor=(el,stops)=>{const r=el.getBoundingClientRect(),travel=Math.max(1,r.height-innerHeight),p=Math.min(1,Math.max(0,-r.top/travel));let s=0;stops.forEach((x,i)=>{if(p>=x)s=i+1});return s};let ticking=false;const update=()=>{ticking=false;if(reduced)return;for(const el of scenes){const kind=el.getAttribute('data-scroll-scene');const stops=kind==='hero'?[.16,.42,.72]:kind==='quote'?[.24,.62]:[.22,.58];el.setAttribute('data-stage',String(stageFor(el,stops)))}};if(!reduced){addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(update)}},{passive:true});addEventListener('resize',update,{passive:true});update()}else{scenes.forEach(el=>el.setAttribute('data-stage','2'))}if(reduced||!('IntersectionObserver'in window)){reveals.forEach(el=>el.classList.add('is-visible'));return}try{const io=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target)}},{threshold:.14,rootMargin:'0px 0px -6% 0px'});reveals.forEach(el=>io.observe(el));root.classList.add('pare-motion')}catch{root.classList.remove('pare-motion');reveals.forEach(el=>el.classList.add('is-visible'))}})();`;
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'PARÉ — Design operating system',
   description: 'Remove what is unnecessary. Keep what makes the work stronger.',
   robots: { index: false, follow: false },
@@ -54,7 +55,7 @@ export default function ParePreviewPage() {
       <section id='top' className='hero' data-stage='0' data-scroll-scene='hero' aria-label='PARÉ word reveal'>
         <div className='sticky'>
           <div className='grid' aria-hidden='true'>
-            {letters.flatMap((row,r)=>row.map((letter,c)=>{const d=drifts[r*7+c];return <span key={`${r}-${c}`} className='letter' data-target={target.has(`${r}-${c}`)} style={{'--dx':d[0],'--dy':d[1]} as CSSProperties}>{letter}</span>}))}
+            {letters.flatMap((row,r)=>row.map((letter,c)=>{const d=drifts[(r*7)+c] ?? ['0','0'];return <span key={`${r}-${c}`} className='letter' data-target={target.has(`${r}-${c}`)} style={{'--dx':d[0],'--dy':d[1]} as CSSProperties}>{letter}</span>}))}
           </div>
           <div className='note'>Design operating system<br/>Open source / owner controlled</div><div className='cue'>scroll</div>
         </div>
