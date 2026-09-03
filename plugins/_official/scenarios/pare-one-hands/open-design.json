@@ -1,0 +1,108 @@
+{
+  "$schema": "https://open-design.ai/schemas/plugin.v1.json",
+  "specVersion": "1.0.0",
+  "name": "pare-one-hands",
+  "title": "PARÉ — One Hands",
+  "version": "0.1.0",
+  "publishedAt": "2026-09-02T00:00:00Z",
+  "description": "PARÉ's default governed studio operator: natural-language outcome to ICM-backed strategy, design, validation and delivery using the existing Open Design runtime.",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "The Pauli Effect",
+    "url": "https://github.com/executiveusa"
+  },
+  "homepage": "https://github.com/executiveusa/PAULI-open-design/tree/main/plugins/_official/scenarios/pare-one-hands",
+  "tags": [
+    "scenario",
+    "first-party",
+    "pare",
+    "brand",
+    "icm",
+    "orchestration"
+  ],
+  "compat": {
+    "agentSkills": [
+      {
+        "path": "./SKILL.md"
+      }
+    ]
+  },
+  "od": {
+    "kind": "scenario",
+    "taskKind": "new-generation",
+    "scenario": "pare-one-hands",
+    "mode": "scenario",
+    "hidden": true,
+    "context": {
+      "craft": [
+        "typography",
+        "color",
+        "anti-ai-slop",
+        "accessibility-baseline"
+      ],
+      "skills": [
+        {
+          "path": "./SKILL.md"
+        }
+      ]
+    },
+    "pipeline": {
+      "stages": [
+        {
+          "id": "intake",
+          "atoms": [
+            "discovery-question-form"
+          ]
+        },
+        {
+          "id": "plan",
+          "atoms": [
+            "direction-picker",
+            "todo-write"
+          ]
+        },
+        {
+          "id": "build",
+          "atoms": [
+            "file-write",
+            "media-image",
+            "media-video",
+            "media-audio",
+            "live-artifact"
+          ]
+        },
+        {
+          "id": "validate",
+          "atoms": [
+            "critique-theater"
+          ],
+          "repeat": true,
+          "until": "critique.score>=4 || iterations>=3"
+        }
+      ]
+    },
+    "capabilities": [
+      "prompt:inject",
+      "pipeline:*",
+      "media:image",
+      "media:video",
+      "media:audio",
+      "fs:write"
+    ],
+    "useCase": {
+      "query": {
+        "en": "Operate a durable brand/design project through PARÉ's ICM-backed workflow while keeping the existing Open Design chat, canvas and agent runtime."
+      },
+      "exampleOutputs": []
+    },
+    "inputs": [
+      {
+        "name": "prompt",
+        "type": "text",
+        "required": false,
+        "label": "What should One Hands build?",
+        "placeholder": "Build the official brand for…"
+      }
+    ]
+  }
+}
