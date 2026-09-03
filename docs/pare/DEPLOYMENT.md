@@ -1,85 +1,96 @@
-# PARÉ Studio deployment model
+# PARÉ deployment model
 
-Status: owner-use release architecture for `ZTE-20260902-0002`.
+Status: owner-use release architecture for `ZTE-20260903-0007`.
 
-## Short answer
+## Shape
 
-PARÉ is **installable software**, not a Vercel-only SaaS.
-
-Use Vercel for a fast browser preview of the web surface. Run the real daemon/execution plane on an owner-controlled VPS when PARÉ needs persistent projects, local files, agent CLIs, long-running sessions, exports and authenticated machine access.
+PARÉ has two replaceable surfaces and one durable source of truth:
 
 ```text
 phone / desktop browser
         |
         v
-Vercel web preview OR private web origin
+Netlify / Vercel / private web origin
         |
         v
-HTTPS reverse proxy
+HTTPS
         |
         v
-PARÉ/Open Design daemon :7456
-  |       |        |        |
-  |       |        |        +-- MCP / HTTP / od CLI
-  |       |        +----------- agent adapters
-  |       +-------------------- ICM project folders
-  +---------------------------- live chat / artifacts / SSE
+owner-controlled PARÉ runtime
+        |
+        +-- persistent project files
+        +-- agent/runtime adapters
+        +-- MCP / HTTP / CLI
+        +-- streaming / exports
+        +-- server-side credentials
 ```
 
-## What Vercel is for
+The browser host is replaceable.
+The project is not.
 
-- previewing the React/Next.js interface;
-- visual review from phone or desktop;
+## Browser host
+
+Use Netlify or Vercel for:
+
+- the public landing experience;
+- Studio UI;
 - pull-request previews;
-- public/static marketing surfaces when desired.
+- phone/desktop visual review;
+- static/browser-facing assets.
 
-Vercel is **not** the canonical agent runtime for PARÉ. The daemon owns long-lived filesystem/process/session capabilities that do not fit an ephemeral serverless execution model.
+Do not treat the browser host as the canonical project store or privileged execution plane.
 
-## What the VPS is for
+## Persistent runtime
 
-The owner-controlled VPS runs the repository's existing Docker/daemon path with:
+Use the owner-controlled VPS for capabilities that need a real machine:
 
-- persistent `OD_DATA_DIR` / Docker volume;
-- persistent folder-backed ICM projects;
-- approved agent CLIs installed server-side;
-- model/provider credentials in runtime secret storage;
-- authenticated HTTPS reverse proxy;
-- SSE/websocket-safe proxy settings;
-- restart/health policy;
+- long-running agent sessions;
+- process spawning and CLI detection;
+- persistent project files;
+- streaming;
+- artifact/export generation;
+- authenticated machine access;
+- server-side secrets;
 - backups and rollback.
 
-The upstream deployment contract already binds the daemon internally to port `7456`, supports `OD_API_TOKEN`, publishes the Docker port on loopback by default, and persists application data in a named volume. PARÉ should reuse that contract rather than add another service framework.
+Reuse the repository's existing daemon/container contract rather than introducing another runtime service merely for the PARÉ name.
 
-## Agent connection
+Current compatibility identifiers such as daemon port `7456`, `OD_DATA_DIR`, `OD_API_TOKEN`, `od` CLI, package namespaces, storage keys, and protocol paths remain stable until there is a functional reason and migration plan to change them.
 
-Agents connect to the **same project** through existing semantic machine doors:
+## Agent access
 
-1. `od` CLI for scripts and operators;
-2. Open Design MCP for coding/assistant agents;
-3. daemon `/api/*` for authenticated integrations;
-4. folder-backed project files when the agent is authorized on the same host/workspace.
+Approved agents operate on the same project through semantic machine interfaces:
 
-One Hands is the human-facing orchestration policy. It routes work to the installed Open Design agent/runtime adapters; it is not a second agent framework.
+1. CLI;
+2. MCP;
+3. authenticated daemon `/api/*`;
+4. authorized project filesystem access.
 
-## Owner-use release
+External agents should not automate the React interface when a semantic interface exists.
 
-The clean first production shape is one private installation:
+## First production shape
+
+Keep the owner-use release small:
 
 - one VPS;
-- one PARÉ/Open Design daemon container;
-- one persistent data volume;
-- one authenticated HTTPS hostname;
-- one canonical ICM project tree per durable brand/project;
-- Vercel retained only as optional preview/showroom infrastructure.
+- one persistent PARÉ runtime/container;
+- one data volume;
+- one authenticated HTTPS origin;
+- one canonical ICM project tree per durable project;
+- one browser host for Studio/landing previews.
 
-A separate agent worker host can be added later if process isolation or load requires it. Do not split services before there is evidence the single-host owner release needs it.
+Do not split into extra services until load, isolation, or security evidence requires it.
 
-## SaaS later, not now
+## Cloud packaging later
 
-Multi-tenant billing and hosted SaaS are optional future packaging. They are not required to use PARÉ today and should not become the only copy of project truth.
+Hosted PARÉ may later add accounts, teams, managed execution, encrypted secret management, collaboration, metering, hosted MCP, and subscriptions.
 
-A client installation can be sold as software + setup/customization + optional maintenance while the client keeps the source, runtime, ICM files and approved brand assets.
+Those conveniences must not become the condition for owning the project.
+
+Self-hosted PARÉ should remain useful.
 
 ## Production gate
 
-A production VPS installation changes privileged infrastructure and therefore requires the project's explicit production approval gate. Until that approval is recorded, keep deployment work to preview, branch, documentation, configuration and non-production verification.
+Preview deploys, branch deploys, documentation, configuration, and non-production verification may proceed during the release loop.
+
+Production promotion is a separate owner action because it changes the authoritative public surface and/or privileged infrastructure.
