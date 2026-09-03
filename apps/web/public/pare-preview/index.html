@@ -68,7 +68,7 @@ function draw(){
  const width=matrix.clientWidth;
  const height=matrix.clientHeight;
  const mobile=innerWidth<=760;
- const targetStep=Math.max(mobile?42:56,Math.min(mobile?72:102,width*(mobile?.14:.135)));
+ const targetStep=Math.max(mobile?42:56,Math.min(mobile?72:102,width*(mobile ? .14 : .135)));
  const targetScale=mobile?3.25:2.85;
  const centerX=width/2;
  const centerY=height/2;
@@ -127,7 +127,6 @@ function settleIntro(){
 }
 addEventListener('scroll',requestDraw,{passive:true});
 addEventListener('resize',requestDraw,{passive:true});
-addEventListener('pageshow',()=>{settleIntro();requestDraw()},{once:true});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(requestDraw);
 setTimeout(requestDraw,300);
 settleIntro();
