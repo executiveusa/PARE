@@ -1,9 +1,11 @@
 'use client';
 
+import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
 import { installErrorHandlers } from '../../src/analytics/error-tracking';
 import { MatrixLoader } from '../../src/components/MatrixLoader';
+import { installProductBrandGuard } from '../../src/i18n/product-copy';
 import { installWebObservability } from '../../src/observability/install';
 
 // Install browser exception handlers at module-load time, before any other
@@ -36,5 +38,11 @@ const App = dynamic(() => import('../../src/App').then((m) => m.App), {
 });
 
 export function ClientApp() {
+  // Some older components and upstream help surfaces still contain literal
+  // product copy outside the translation dictionaries. Keep the rendered app
+  // consistently PARÉ-branded while preserving technical compatibility names
+  // in source, code examples, storage, packages and runtime adapters.
+  useEffect(() => installProductBrandGuard(), []);
+
   return <App />;
 }
