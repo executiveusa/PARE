@@ -48,11 +48,12 @@ PARÉ daemon :7456
 This remote gateway is a developer/private integration surface. A public multi-user marketplace app still requires user/workspace identity and stronger authorization (OAuth or the current marketplace-approved equivalent).
 
 ## Caddy target
-Recommended routes:
+Recommended route shape:
 
 ```caddyfile
 api.thepaulieffect.com {
-    handle_path /pare/mcp* {
+    handle /pare/mcp* {
+        uri strip_prefix /pare
         reverse_proxy 127.0.0.1:7457
     }
 
@@ -63,6 +64,10 @@ api.thepaulieffect.com {
     }
 }
 ```
+
+The MCP route deliberately strips only `/pare`, so:
+- `/pare/mcp` reaches the gateway as `/mcp`;
+- `/pare/mcp/health` reaches the gateway as `/mcp/health`.
 
 Treat this as intent, not a blind replacement. The VPS operator must merge it into the existing Caddyfile, preserve unrelated routes, validate with `caddy validate`, and verify exact path behavior.
 
