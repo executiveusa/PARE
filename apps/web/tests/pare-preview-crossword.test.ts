@@ -2,6 +2,8 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const html = readFileSync(new URL('../public/pare-preview/index.html', import.meta.url), 'utf8');
+const redirects = readFileSync(new URL('../public/_redirects', import.meta.url), 'utf8');
+const clientApp = readFileSync(new URL('../app/[[...slug]]/client-app.tsx', import.meta.url), 'utf8');
 
 describe('PARÉ preview crossword hero', () => {
   it('ships the crossword as static HTML instead of constructing the hero only in JavaScript', () => {
@@ -33,5 +35,19 @@ describe('PARÉ preview crossword hero', () => {
   it('does not depend on the previous dynamically generated random-letter matrix', () => {
     expect(html).not.toContain('for(let i=0;i<63;i++)');
     expect(html).not.toContain("const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-/:;.%#*?|'" );
+  });
+
+  it('makes the PARÉ effect the mandatory public doorway into Studio', () => {
+    expect(redirects).toContain('/  /pare-preview/  302!');
+    expect(html).toContain('id="studio-entry"');
+    expect(html).toContain('data-enter-studio');
+    expect(html).toContain("sessionStorage.setItem('pare:effect-passed','1')");
+    expect(clientApp).toContain("const ENTRY_GATE_KEY = 'pare:effect-passed'");
+    expect(clientApp).toContain("window.location.replace(`${LANDING_PATH}#studio-entry`)");
+  });
+
+  it('keeps diffusion mounted inside the real Studio after the entry gate', () => {
+    expect(clientApp).toContain("import { DiffusionOverlay } from '../../src/components/DiffusionOverlay'");
+    expect(clientApp).toContain('<DiffusionOverlay />');
   });
 });
