@@ -46,6 +46,12 @@ describe('PARÉ preview crossword hero', () => {
     expect(clientApp).toContain("window.location.replace(`${LANDING_PATH}#studio-entry`)");
   });
 
+  it('consumes the landing grant so every hard Studio entry must pass through the effect again', () => {
+    expect(clientApp).toContain('sessionStorage.removeItem(ENTRY_GATE_KEY)');
+    expect(clientApp).toContain('cleanOneShotEntryQuery()');
+    expect(clientApp).toContain("url.searchParams.delete('pare-entry')");
+  });
+
   it('keeps diffusion mounted inside the real Studio after the entry gate', () => {
     expect(clientApp).toContain("import { DiffusionOverlay } from '../../src/components/DiffusionOverlay'");
     expect(clientApp).toContain('<DiffusionOverlay />');
