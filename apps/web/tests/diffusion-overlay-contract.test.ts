@@ -31,4 +31,10 @@ describe('PARÉ Studio diffusion contract', () => {
     expect(overlay).toContain('data-pare-diffusion={reducedMotion ? "reduced" : enabled ? "on" : "off"}');
     expect(overlay).toContain('data-pare-diffusion-active');
   });
+
+  it('re-arms the presentation layer whenever a paused stream resumes', () => {
+    expect(overlay).toMatch(
+      /if \(runtime\.text !== text\)[\s\S]*runtime\.target\.style\.opacity = "0\.07"[\s\S]*runtime\.target\.style\.filter = "blur\(1\.6px\)"/,
+    );
+  });
 });
