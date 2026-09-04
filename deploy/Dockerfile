@@ -119,4 +119,4 @@ EXPOSE 7456
 
 USER open-design
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["node", "apps/daemon/dist/cli.js", "--no-open"]
+CMD ["node", "apps/daemon/dist/cli.js", "daemon", "start", "--no-open"]
