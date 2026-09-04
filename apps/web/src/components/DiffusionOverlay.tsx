@@ -33,16 +33,6 @@ type ActiveRuntime = {
   previousTransition: string;
 };
 
-/**
- * The assistant renderer can briefly leave an older streaming block mounted
- * while the newest row is being reconciled. Query every live cursor and take
- * the last one in document order so PARÉ follows the response the user can
- * actually see being written.
- *
- * Prefer the newest prose-like markdown block rather than the whole message.
- * This keeps code, tables and tool cards semantically untouched while making
- * headings, lists, quotes and paragraphs all eligible for the Fusion effect.
- */
 export function latestStreamingTextTarget(root: ParentNode = document): HTMLElement | null {
   const blocks = root.querySelectorAll<HTMLElement>(STREAM_BLOCK_SELECTOR);
   const block = blocks.item(blocks.length - 1);
@@ -219,8 +209,6 @@ export function DiffusionOverlay() {
         };
         runtimeRef.current = runtime;
         target.style.transition = "opacity 90ms ease, filter 90ms ease";
-        target.style.opacity = "0.07";
-        target.style.filter = "blur(1.6px)";
       }
 
       if (runtime.text !== text) {
@@ -234,6 +222,17 @@ export function DiffusionOverlay() {
         runtime.text = text;
         runtime.lastMutationAt = now;
         rebuildOverlay(runtime);
+
+        // A streamed model can pause long enough for every current glyph to
+        // lock, then resume before the quiet-removal timer expires. The prior
+        // implementation restored the semantic target to full opacity when
+        // the pause locked, but did not hide it again when new deltas arrived,
+        // creating doubled text and making later diffusion effectively
+        // invisible. Re-arm the presentation layer on every real text delta.
+        runtime.target.style.transition = "opacity 90ms ease, filter 90ms ease";
+        runtime.target.style.opacity = "0.07";
+        runtime.target.style.filter = "blur(1.6px)";
+        document.documentElement.setAttribute("data-pare-diffusion-active", "true");
       }
       copyTypography(target, runtime.overlay);
       positionOverlay(runtime);
