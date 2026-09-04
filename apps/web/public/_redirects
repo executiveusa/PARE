@@ -1,7 +1,12 @@
-# Proxy API calls to the PAR� VPS Gateway
+# Public entry always begins with the PARÉ effect / crossword story.
+/  /pare-preview/  302!
+/pare-preview  /pare-preview/  301!
+
+# Proxy API calls to the PARÉ VPS Gateway
 /api/*  https://api.thepaulieffect.com/pare/api/:splat  200!
 /artifacts/*  https://api.thepaulieffect.com/pare/artifacts/:splat  200!
 /frames/*  https://api.thepaulieffect.com/pare/frames/:splat  200!
 
-# SPA Fallback for Next.js static export
+# SPA Fallback for Next.js static export. `/studio` is the canonical
+# human workspace entry after the visitor has passed through the PARÉ effect.
 /*      /index.html                                     200
