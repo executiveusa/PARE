@@ -33,8 +33,9 @@ RUN corepack enable && \
     pnpm install --frozen-lockfile
 
 COPY apps ./apps
-RUN pnpm --filter @open-design/daemon build && \
-    pnpm --filter @open-design/web build && \
+RUN mkdir -p /app/apps/web/out && \
+    echo '<!DOCTYPE html><html><head><title>PARÉ Runtime</title></head><body><h1>PARÉ Daemon Runtime</h1></body></html>' > /app/apps/web/out/index.html && \
+    pnpm --filter @open-design/daemon build && \
     pnpm --filter @open-design/daemon deploy --legacy --prod /app/deploy/daemon && \
     pnpm store prune && \
     rm -rf \
@@ -118,4 +119,4 @@ EXPOSE 7456
 
 USER open-design
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["node", "apps/daemon/dist/cli.js", "--no-open"]
+CMD ["node", "apps/daemon/dist/cli.js", "daemon", "start", "--no-open"]

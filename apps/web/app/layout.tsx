@@ -8,7 +8,7 @@ import '../src/styles/home/index.css';
 
 export const metadata: Metadata = {
   title: 'PARÉ Studio',
-  description: 'Brand systems, reduced to what matters. Owner-controlled brand and design software by Pauli Brand Studio.',
+  description: 'Turn a request into visible project work while keeping the project, files, proof, and approvals portable.',
   icons: {
     icon: '/app-icon.png',
     apple: '/app-icon.png',

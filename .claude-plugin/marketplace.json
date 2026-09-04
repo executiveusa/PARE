@@ -1,16 +1,16 @@
 {
   "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/schemas/marketplace.json",
-  "name": "open-design",
+  "name": "pare",
   "owner": {
-    "name": "nexu-io",
-    "url": "https://github.com/nexu-io/open-design"
+    "name": "The Pauli Effect",
+    "url": "https://github.com/executiveusa/PARE"
   },
-  "description": "OpenDesign — local-first design app exposed to coding agents over MCP. Install once with your agent's plugin command and projects/files/skills are reachable through stdio.",
+  "description": "PARÉ — a sovereign AI studio for owner-controlled projects, files, agents and infrastructure. Connect Claude Code to the PARÉ runtime over MCP without moving project ownership into the model vendor.",
   "plugins": [
     {
       "name": "open-design",
       "source": "./plugins/open-design",
-      "description": "OpenDesign MCP server (stdio). 139 skills + projects/files/preview tools, served by your local `od` daemon. Requires `od` on PATH (brew / npm / DMG)."
+      "description": "PARÉ MCP compatibility plugin for Claude Code. Connects the existing `od` CLI/MCP transport to PARÉ projects, live artifacts and approved connector tools. The compatibility package id remains `open-design` for existing installs; the user-facing product is PARÉ."
     }
   ]
 }

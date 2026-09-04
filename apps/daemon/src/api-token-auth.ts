@@ -13,7 +13,9 @@ export function isApiAuthDisabled(env: NodeJS.ProcessEnv = process.env): boolean
 }
 
 export function apiTokenFromEnv(env: NodeJS.ProcessEnv = process.env): string {
-  return (env.OD_API_TOKEN ?? '').trim();
+  const direct = (env.PARE_API_TOKEN ?? env.OD_API_TOKEN ?? '').trim();
+  if (direct) return direct;
+  return '';
 }
 
 export function isApiTokenMiddlewareEnabled(env: NodeJS.ProcessEnv = process.env): boolean {

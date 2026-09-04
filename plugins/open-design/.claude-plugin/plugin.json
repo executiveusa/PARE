@@ -1,7 +1,7 @@
 {
   "name": "open-design",
-  "displayName": "OpenDesign",
+  "displayName": "PARÉ",
   "version": "1.0.0",
-  "description": "Local-first design app · 139 skills + 150 DESIGN.md systems · exposes projects/files/preview tools to your coding agent over stdio MCP. Requires the `od` daemon on PATH.",
+  "description": "PARÉ sovereign studio compatibility plugin · projects, live artifacts and approved connector tools exposed to Claude Code over MCP. Requires the `od` compatibility CLI and a reachable PARÉ daemon.",
   "mcpServers": "./.mcp.json"
 }

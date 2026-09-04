@@ -1,0 +1,83 @@
+name: pare-runtime
+
+services:
+  pare-daemon:
+    container_name: pare-daemon
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: ${NODE_OPTIONS:---max-old-space-size=512}
+      OD_BIND_HOST: 0.0.0.0
+      OD_PORT: 7456
+      OD_WEB_PORT: 7456
+      OD_DATA_DIR: /app/.od
+      OD_PUBLIC_BASE_URL: ${OD_PUBLIC_BASE_URL:-https://api.thepaulieffect.com/pare}
+      OD_API_TOKEN: ${PARE_API_TOKEN:-${OD_API_TOKEN:-}}
+      PARE_API_TOKEN: ${PARE_API_TOKEN:-${OD_API_TOKEN:-}}
+      PARE_BOOTSTRAP_SECRET: ${PARE_BOOTSTRAP_SECRET:-${INFISCAL_API_TOKEN:-}}
+      INFISCAL_API_TOKEN: ${INFISCAL_API_TOKEN:-${PARE_BOOTSTRAP_SECRET:-}}
+      OD_ALLOWED_ORIGINS: ${OD_ALLOWED_ORIGINS:-https://pauli-para.netlify.app,https://deploy-preview-5--pauli-para.netlify.app,https://pare-api.thepaulieffect.com,https://api.thepaulieffect.com,http://localhost:3000,http://127.0.0.1:3000}
+    ports:
+      - "127.0.0.1:7456:7456"
+    volumes:
+      - /data/pare:/app/.od
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 1024m
+    pids_limit: 512
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:7456/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  pare-mcp:
+    container_name: pare-mcp
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    command: ["node", "apps/daemon/dist/pare-mcp-http-main.js"]
+    restart: unless-stopped
+    depends_on:
+      pare-daemon:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=128
+      PARE_MCP_BIND_HOST: 0.0.0.0
+      PARE_MCP_PORT: 7457
+      PARE_DAEMON_INTERNAL_URL: http://pare-daemon:7456
+      PARE_API_TOKEN: ${PARE_API_TOKEN:-${OD_API_TOKEN:-}}
+      PARE_MCP_TOKEN: ${PARE_MCP_TOKEN:-${PARE_API_TOKEN:-${OD_API_TOKEN:-}}}
+    ports:
+      - "127.0.0.1:7457:7457"
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
+    pids_limit: 128
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:7457/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

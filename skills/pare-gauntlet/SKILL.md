@@ -1,6 +1,6 @@
 ---
 name: pare-gauntlet
-description: Run an independent evidence-backed quality loop: builder to fresh critic to direct comparison to one biggest gap to bounded repair, stopping only when the defined release bar is met or a hard gate fails.
+description: "Run an independent evidence-backed quality loop: builder to fresh critic to direct comparison to one biggest gap to bounded repair, stopping only when the defined release bar is met or a hard gate fails."
 triggers:
   - "run the gauntlet"
   - "gauntlet"
