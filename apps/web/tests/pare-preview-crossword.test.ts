@@ -1,8 +1,6 @@
 import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
-const here = fileURLToPath(new URL('.', import.meta.url));
 const html = readFileSync(new URL('../public/pare-preview/index.html', import.meta.url), 'utf8');
 
 describe('PARÉ preview crossword hero', () => {
@@ -16,10 +14,12 @@ describe('PARÉ preview crossword hero', () => {
     expect(html).toContain('>É</span>');
   });
 
-  it('contains the four intersecting concept words anchored by PARÉ', () => {
-    const compact = html.replace(/\s+/g, ' ');
-    for (const letter of ['P', 'R', 'O', 'J', 'E', 'C', 'T']) expect(compact).toContain(`>${letter}</span>`);
-    for (const word of ['PROJECT', 'AGENTS', 'REDUCE', 'ÉPURE']) expect(html).toContain(word);
+  it('contains intersecting supporting letters below the PARÉ target row', () => {
+    expect(html).toContain('style="grid-area:6/5">R</span>');
+    expect(html).toContain('style="grid-area:7/5">O</span>');
+    expect(html).toContain('style="grid-area:6/6">G</span>');
+    expect(html).toContain('style="grid-area:6/7">E</span>');
+    expect(html).toContain('style="grid-area:6/8">P</span>');
   });
 
   it('keeps the runtime hardening hooks required for layout-safe scroll animation', () => {
@@ -30,8 +30,8 @@ describe('PARÉ preview crossword hero', () => {
     expect(html).toContain('requestAnimationFrame(draw)');
   });
 
-  it('does not depend on a dynamically generated random-letter matrix', () => {
-    expect(html).not.toContain("const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-/:;.%#*?|'\");
+  it('does not depend on the previous dynamically generated random-letter matrix', () => {
     expect(html).not.toContain('for(let i=0;i<63;i++)');
+    expect(html).not.toContain("const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-/:;.%#*?|'" );
   });
 });
