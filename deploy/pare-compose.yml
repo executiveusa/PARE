@@ -14,11 +14,12 @@ services:
       OD_PORT: 7456
       OD_WEB_PORT: 7456
       OD_DATA_DIR: /app/.od
+      OD_PUBLIC_BASE_URL: ${OD_PUBLIC_BASE_URL:-https://api.thepaulieffect.com/pare}
       OD_API_TOKEN: ${PARE_API_TOKEN:-${OD_API_TOKEN:-}}
       PARE_API_TOKEN: ${PARE_API_TOKEN:-${OD_API_TOKEN:-}}
       PARE_BOOTSTRAP_SECRET: ${PARE_BOOTSTRAP_SECRET:-${INFISCAL_API_TOKEN:-}}
       INFISCAL_API_TOKEN: ${INFISCAL_API_TOKEN:-${PARE_BOOTSTRAP_SECRET:-}}
-      OD_ALLOWED_ORIGINS: "https://pauli-para.netlify.app,https://pare-api.thepaulieffect.com,https://api.thepaulieffect.com,http://localhost:3000,http://127.0.0.1:3000"
+      OD_ALLOWED_ORIGINS: ${OD_ALLOWED_ORIGINS:-https://pauli-para.netlify.app,https://deploy-preview-5--pauli-para.netlify.app,https://pare-api.thepaulieffect.com,https://api.thepaulieffect.com,http://localhost:3000,http://127.0.0.1:3000}
     ports:
       - "127.0.0.1:7456:7456"
     volumes:
