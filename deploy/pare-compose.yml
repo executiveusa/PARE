@@ -48,7 +48,7 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
-    command: ["node", "apps/daemon/dist/pare-mcp-http-server.js"]
+    command: ["node", "apps/daemon/dist/pare-mcp-http-main.js"]
     restart: unless-stopped
     depends_on:
       pare-daemon:
