@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 
 import { installErrorHandlers } from '../../src/analytics/error-tracking';
 import { MatrixLoader } from '../../src/components/MatrixLoader';
+import { DiffusionOverlay } from '../../src/components/DiffusionOverlay';
 import { installProductBrandGuard } from '../../src/i18n/product-copy';
 import { installWebObservability } from '../../src/observability/install';
 
@@ -44,5 +45,10 @@ export function ClientApp() {
   // in source, code examples, storage, packages and runtime adapters.
   useEffect(() => installProductBrandGuard(), []);
 
-  return <App />;
+  return (
+    <>
+      <App />
+      <DiffusionOverlay />
+    </>
+  );
 }

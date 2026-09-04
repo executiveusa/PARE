@@ -16,6 +16,8 @@ import {
   type SandboxRuntimeConfig,
 } from '../sandbox-mode.js';
 
+import { SecretResolver } from '../secrets/secret-resolver.js';
+
 type RuntimeEnvMap = NodeJS.ProcessEnv | Record<string, string>;
 type SpawnEnvOptions = {
   resolvedBin?: string | null;
@@ -298,10 +300,32 @@ function reapplySandboxRuntimeEnv(
   return applySandboxRuntimeEnv(env, sandboxRuntime);
 }
 
+function resolveAgentSecrets(env: NodeJS.ProcessEnv): void {
+  const keysToInject = [
+    'OPENAI_API_KEY',
+    'ANTHROPIC_API_KEY',
+    'GEMINI_API_KEY',
+    'GOOGLE_API_KEY',
+    'DEEPSEEK_API_KEY',
+    'OPEN_ROUTER_API',
+    'HERMES_AGENT_API',
+    'GH_PAT',
+  ];
+  for (const key of keysToInject) {
+    if (!envValue(env, key)) {
+      const secret = SecretResolver.getSync(key);
+      if (secret) {
+        env[key] = secret;
+      }
+    }
+  }
+}
+
 function finalizeRuntimeEnv(
   env: NodeJS.ProcessEnv,
   sandboxRuntime: SandboxRuntimeConfig | null,
 ): NodeJS.ProcessEnv {
+  resolveAgentSecrets(env);
   const finalizedEnv = reapplySandboxRuntimeEnv(env, sandboxRuntime);
   applyWindowsUserCacheEnv(finalizedEnv);
   return finalizedEnv;

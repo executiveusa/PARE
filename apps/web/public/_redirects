@@ -1,0 +1,7 @@
+# Proxy API calls to the PARÉ VPS Gateway
+/api/*  https://api.thepaulieffect.com/pare/api/:splat  200!
+/artifacts/*  https://api.thepaulieffect.com/pare/artifacts/:splat  200!
+/frames/*  https://api.thepaulieffect.com/pare/frames/:splat  200!
+
+# SPA Fallback for Next.js static export
+/*      /index.html                                     200
