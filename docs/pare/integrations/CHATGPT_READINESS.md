@@ -1,6 +1,6 @@
 # PARÉ — ChatGPT / OpenAI Plugin Directory Readiness
 
-Status: **code-side readiness in progress; not submitted or approved**.
+Status: **private/developer remote MCP is now implemented on the release branch; runtime proof and public marketplace auth remain incomplete; not submitted or approved**.
 
 ## Product position
 PARÉ is a sovereign AI studio. The ChatGPT integration should let a user work with PARÉ projects and artifacts from ChatGPT while PARÉ remains the authority for project files, memory, permissions, execution, and infrastructure.
@@ -15,17 +15,27 @@ Official references:
 - https://help.openai.com/en/articles/12515353-build-with-the-apps-sdk
 - https://help.openai.com/en/articles/20001256/
 
-## What PARÉ actually has today
+## What PARÉ has on the release branch
 - sovereign daemon/API runtime;
 - `od` compatibility CLI;
-- a working **stdio MCP implementation** in `apps/daemon/src/mcp-live-artifacts-server.ts`;
-- MCP tools for live-artifact create/list/update/refresh and approved connector list/execute;
-- bearer-token enforcement on the MCP-to-daemon tool calls;
+- stdio MCP implementation in `apps/daemon/src/mcp-live-artifacts-server.ts`;
+- stdio tools for live-artifact create/list/update/refresh and approved connector list/execute;
+- new private/developer HTTP MCP gateway in `apps/daemon/src/pare-mcp-http-server.ts` + `pare-mcp-http-main.ts`;
+- private gateway tool names: `pare_health`, `pare_list_projects`, `pare_get_project`;
+- separate `PARE_MCP_TOKEN` boundary with authenticated internal daemon calls;
+- loopback-only Compose publication target on port 7457;
 - persistent project data on owner-controlled infrastructure;
 - Netlify Studio → Caddy → VPS runtime architecture.
 
-## Important correction
-The repository does **not yet prove a standards-compliant public remote MCP endpoint for ChatGPT**. The existing MCP transport is stdio. Do not describe PARÉ as submitted, approved, or remotely installable in ChatGPT until the remote transport and auth slice below is implemented and verified.
+## What this does NOT prove
+The code existing in GitHub does not prove:
+- the VPS has built or started the MCP gateway;
+- the public Caddy path works;
+- ChatGPT Developer Mode can connect;
+- a shared static bearer token is appropriate for a public multi-user app;
+- PARÉ is submitted, approved, listed, or installable from the OpenAI directory.
+
+The current remote MCP gateway is deliberately a **private/developer integration surface** for proving transport and tool behavior. Public distribution still requires user/workspace identity and the current marketplace-approved authorization flow.
 
 ## Recommended first public app scope
 Keep the first public app intentionally narrow:
@@ -37,15 +47,15 @@ Keep the first public app intentionally narrow:
 
 Do not expose raw shell, secrets, broad filesystem access, server administration, production deployment, or destructive project controls in the first public app.
 
-## Remote MCP slice required before submission
-- expose Streamable HTTP MCP on the sovereign runtime, recommended path `https://api.thepaulieffect.com/pare/mcp`;
-- authenticate an actual user/workspace, not a shared browser secret;
-- map MCP calls to PARÉ project authorization;
-- use least-privilege, action-oriented tool descriptions;
+## Public hardening slice required before submission
+- prove private MCP over the sovereign VPS and TLS gateway;
+- add authenticated user/workspace identity instead of a shared static public token;
+- map each MCP call to PARÉ project authorization and least-privilege grants;
 - add live privacy, terms/support, export and deletion documentation;
 - test from ChatGPT Developer Mode;
 - generate the OpenAI submission/test packet from the exact deployed revision;
-- prove negative cases: unauthenticated, unauthorized project, malformed input, runtime/provider failure.
+- prove negative cases: unauthenticated, unauthorized project, malformed input, runtime/provider failure;
+- if an Apps SDK widget is added, keep it small and project/artifact focused rather than embedding the whole Studio.
 
 ## Public tool naming target
 Use PARÉ-first names at the public boundary while compatibility ids may remain internal:
@@ -56,7 +66,7 @@ Use PARÉ-first names at the public boundary while compatibility ids may remain 
 - `pare_update_artifact`
 - later: `pare_start_run`
 
-These are target public names, **not shipped claims**, until the remote MCP implementation registers them.
+Only `pare_list_projects` and `pare_get_project` from that target list are implemented in the current private gateway. Do not advertise the rest as shipped until registered and verified.
 
 ## UX bar
 Any Apps SDK UI should look like PARÉ: off-white paper, near-black ink, restrained typography, precise spacing, minimal chrome. The app should expose the useful project/artifact moment rather than recreate the entire Studio inside ChatGPT.
@@ -64,7 +74,7 @@ Any Apps SDK UI should look like PARÉ: off-white paper, near-black ink, restrai
 ## Submission gate
 Ready only when:
 - remote MCP production URL is reachable;
-- authorization is proven;
+- user/workspace authorization is proven;
 - advertised tools work on the exact production SHA;
 - privacy/support/legal URLs are live;
 - negative tests pass;
