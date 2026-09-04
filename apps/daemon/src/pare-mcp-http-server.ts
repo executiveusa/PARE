@@ -1,17 +1,22 @@
-import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
+import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import { timingSafeEqual } from 'node:crypto';
 
 type JsonObject = Record<string, unknown>;
-type JsonRpcRequest = { jsonrpc?: string; id?: string | number | null; method?: string; params?: JsonObject };
+export type PareMcpJsonRpcRequest = {
+  jsonrpc?: string;
+  id?: string | number | null;
+  method?: string;
+  params?: JsonObject;
+};
 
-const HOST = process.env.PARE_MCP_BIND_HOST?.trim() || '0.0.0.0';
-const PORT = Number(process.env.PARE_MCP_PORT || 7457);
-const DAEMON_URL = (process.env.PARE_DAEMON_INTERNAL_URL || 'http://pare-daemon:7456').replace(/\/+$/u, '');
-const MCP_TOKEN = process.env.PARE_MCP_TOKEN || process.env.PARE_API_TOKEN || process.env.OD_API_TOKEN || '';
-const DAEMON_TOKEN = process.env.PARE_API_TOKEN || process.env.OD_API_TOKEN || '';
-const MAX_BODY_BYTES = 1024 * 1024;
+export type PareMcpConfig = {
+  daemonUrl: string;
+  mcpToken: string;
+  daemonToken: string;
+  fetchImpl?: typeof fetch;
+};
 
-const tools = [
+export const PARE_MCP_TOOLS = [
   {
     name: 'pare_health',
     description: 'Check whether the sovereign PARÉ daemon is reachable. This tool does not expose credentials or host internals.',
@@ -34,6 +39,8 @@ const tools = [
   },
 ] as const;
 
+const MAX_BODY_BYTES = 1024 * 1024;
+
 function json(res: ServerResponse, status: number, body: unknown) {
   const payload = JSON.stringify(body);
   res.statusCode = status;
@@ -43,9 +50,9 @@ function json(res: ServerResponse, status: number, body: unknown) {
   res.end(payload);
 }
 
-function tokenMatches(candidate: string | undefined): boolean {
-  if (!MCP_TOKEN || !candidate) return false;
-  const expected = Buffer.from(MCP_TOKEN);
+export function tokenMatches(expectedToken: string, candidate: string | undefined): boolean {
+  if (!expectedToken || !candidate) return false;
+  const expected = Buffer.from(expectedToken);
   const actual = Buffer.from(candidate);
   return expected.length === actual.length && timingSafeEqual(expected, actual);
 }
@@ -56,7 +63,7 @@ function bearer(req: IncomingMessage): string | undefined {
   return raw.slice(7).trim();
 }
 
-async function readJsonBody(req: IncomingMessage): Promise<JsonRpcRequest> {
+async function readJsonBody(req: IncomingMessage): Promise<PareMcpJsonRpcRequest> {
   const chunks: Buffer[] = [];
   let size = 0;
   for await (const chunk of req) {
@@ -67,21 +74,36 @@ async function readJsonBody(req: IncomingMessage): Promise<JsonRpcRequest> {
   }
   const text = Buffer.concat(chunks).toString('utf8');
   if (!text) throw new Error('empty request body');
-  return JSON.parse(text) as JsonRpcRequest;
+  return JSON.parse(text) as PareMcpJsonRpcRequest;
 }
 
-function safeProjectId(value: unknown): string {
+export function safeProjectId(value: unknown): string {
   if (typeof value !== 'string') throw new Error('projectId is required');
   const trimmed = value.trim();
   if (!/^[A-Za-z0-9._:-]{1,200}$/u.test(trimmed)) throw new Error('invalid projectId');
   return trimmed;
 }
 
-async function daemonRequest(pathname: string): Promise<unknown> {
-  const response = await fetch(`${DAEMON_URL}${pathname}`, {
+function normalizeDaemonUrl(value: string): string {
+  const trimmed = value.trim().replace(/\/+$/u, '');
+  if (!/^https?:\/\//iu.test(trimmed)) throw new Error('PARE_DAEMON_INTERNAL_URL must be http(s)');
+  return trimmed;
+}
+
+export function pareMcpConfigFromEnv(env: NodeJS.ProcessEnv = process.env): PareMcpConfig {
+  return {
+    daemonUrl: normalizeDaemonUrl(env.PARE_DAEMON_INTERNAL_URL || 'http://pare-daemon:7456'),
+    mcpToken: env.PARE_MCP_TOKEN || env.PARE_API_TOKEN || env.OD_API_TOKEN || '',
+    daemonToken: env.PARE_API_TOKEN || env.OD_API_TOKEN || '',
+  };
+}
+
+async function daemonRequest(config: PareMcpConfig, pathname: string): Promise<unknown> {
+  const fetchImpl = config.fetchImpl ?? fetch;
+  const response = await fetchImpl(`${normalizeDaemonUrl(config.daemonUrl)}${pathname}`, {
     headers: {
       Accept: 'application/json',
-      ...(DAEMON_TOKEN ? { Authorization: `Bearer ${DAEMON_TOKEN}` } : {}),
+      ...(config.daemonToken ? { Authorization: `Bearer ${config.daemonToken}` } : {}),
     },
   });
   const text = await response.text();
@@ -93,19 +115,25 @@ async function daemonRequest(pathname: string): Promise<unknown> {
   return body;
 }
 
-async function callTool(name: string, args: JsonObject): Promise<unknown> {
-  if (name === 'pare_health') return daemonRequest('/api/health');
-  if (name === 'pare_list_projects') return daemonRequest('/api/projects');
-  if (name === 'pare_get_project') return daemonRequest(`/api/projects/${encodeURIComponent(safeProjectId(args.projectId))}`);
+async function callTool(config: PareMcpConfig, name: string, args: JsonObject): Promise<unknown> {
+  if (name === 'pare_health') return daemonRequest(config, '/api/health');
+  if (name === 'pare_list_projects') return daemonRequest(config, '/api/projects');
+  if (name === 'pare_get_project') {
+    return daemonRequest(config, `/api/projects/${encodeURIComponent(safeProjectId(args.projectId))}`);
+  }
   throw new Error(`unknown tool: ${name}`);
 }
 
-async function handleRpc(request: JsonRpcRequest): Promise<JsonObject | undefined> {
+export async function handlePareMcpRpc(
+  config: PareMcpConfig,
+  request: PareMcpJsonRpcRequest,
+): Promise<JsonObject | undefined> {
   const id = request.id ?? null;
   if (request.method === 'notifications/initialized') return undefined;
   if (request.method === 'initialize') {
     return {
-      jsonrpc: '2.0', id,
+      jsonrpc: '2.0',
+      id,
       result: {
         protocolVersion: '2025-03-26',
         capabilities: { tools: {} },
@@ -113,7 +141,9 @@ async function handleRpc(request: JsonRpcRequest): Promise<JsonObject | undefine
       },
     };
   }
-  if (request.method === 'tools/list') return { jsonrpc: '2.0', id, result: { tools } };
+  if (request.method === 'tools/list') {
+    return { jsonrpc: '2.0', id, result: { tools: PARE_MCP_TOOLS } };
+  }
   if (request.method === 'tools/call') {
     const params = request.params ?? {};
     const name = typeof params.name === 'string' ? params.name : '';
@@ -121,53 +151,57 @@ async function handleRpc(request: JsonRpcRequest): Promise<JsonObject | undefine
       ? params.arguments as JsonObject
       : {};
     try {
-      const result = await callTool(name, args);
-      return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(result) }] } };
+      const result = await callTool(config, name, args);
+      return {
+        jsonrpc: '2.0',
+        id,
+        result: { content: [{ type: 'text', text: JSON.stringify(result) }] },
+      };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'PARÉ tool failed';
-      return { jsonrpc: '2.0', id, result: { isError: true, content: [{ type: 'text', text: message }] } };
+      return {
+        jsonrpc: '2.0',
+        id,
+        result: { isError: true, content: [{ type: 'text', text: message }] },
+      };
     }
   }
-  return { jsonrpc: '2.0', id, error: { code: -32601, message: `method not found: ${String(request.method)}` } };
+  return {
+    jsonrpc: '2.0',
+    id,
+    error: { code: -32601, message: `method not found: ${String(request.method)}` },
+  };
 }
 
-const server = createServer(async (req, res) => {
-  try {
-    const url = new URL(req.url || '/', 'http://pare.local');
-    if (req.method === 'GET' && url.pathname === '/health') {
-      return json(res, 200, { ok: true, service: 'pare-mcp' });
+export function createPareMcpHttpServer(config: PareMcpConfig): Server {
+  if (!config.mcpToken) throw new Error('PARE_MCP_TOKEN (or API token fallback) is required');
+  return createServer(async (req, res) => {
+    try {
+      const url = new URL(req.url || '/', 'http://pare.local');
+      if (req.method === 'GET' && (url.pathname === '/health' || url.pathname === '/mcp/health')) {
+        return json(res, 200, { ok: true, service: 'pare-mcp' });
+      }
+      if (url.pathname !== '/mcp') return json(res, 404, { error: 'not found' });
+      if (req.method === 'OPTIONS') {
+        res.statusCode = 204;
+        res.setHeader('Allow', 'POST, OPTIONS');
+        return res.end();
+      }
+      if (req.method !== 'POST') return json(res, 405, { error: 'method not allowed' });
+      if (!tokenMatches(config.mcpToken, bearer(req))) {
+        res.setHeader('WWW-Authenticate', 'Bearer realm="PARÉ MCP"');
+        return json(res, 401, { error: 'authentication required' });
+      }
+      const request = await readJsonBody(req);
+      const response = await handlePareMcpRpc(config, request);
+      if (response === undefined) {
+        res.statusCode = 202;
+        return res.end();
+      }
+      return json(res, 200, response);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'request failed';
+      return json(res, 400, { jsonrpc: '2.0', id: null, error: { code: -32600, message } });
     }
-    if (url.pathname !== '/mcp') return json(res, 404, { error: 'not found' });
-    if (req.method === 'OPTIONS') {
-      res.statusCode = 204;
-      res.setHeader('Allow', 'POST, OPTIONS');
-      return res.end();
-    }
-    if (req.method !== 'POST') return json(res, 405, { error: 'method not allowed' });
-    if (!tokenMatches(bearer(req))) {
-      res.setHeader('WWW-Authenticate', 'Bearer realm="PARÉ MCP"');
-      return json(res, 401, { error: 'authentication required' });
-    }
-    const request = await readJsonBody(req);
-    const response = await handleRpc(request);
-    if (response === undefined) {
-      res.statusCode = 202;
-      return res.end();
-    }
-    return json(res, 200, response);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'request failed';
-    return json(res, 400, { jsonrpc: '2.0', id: null, error: { code: -32600, message } });
-  }
-});
-
-server.listen(PORT, HOST, () => {
-  // Never log tokens or provider credentials.
-  console.log(`[pare-mcp] listening on ${HOST}:${PORT}`);
-});
-
-function shutdown() {
-  server.close(() => process.exit(0));
+  });
 }
-process.on('SIGTERM', shutdown);
-process.on('SIGINT', shutdown);
