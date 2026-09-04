@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>PARÉ Journal</title>
+    <link>https://pauli-para.netlify.app/pare-preview/blog/</link>
+    <description>Field notes on sovereign software, agentic work, design and proof-first building.</description>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 04 Sep 2026 19:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Your company should own its software.</title>
+      <link>https://pauli-para.netlify.app/pare-preview/blog/#own</link>
+      <guid>pare-journal-001</guid>
+      <description>The software around a company is becoming part of the company. Ownership is no longer a technical preference.</description>
+    </item>
+    <item>
+      <title>Models change. Your operating system shouldn’t.</title>
+      <link>https://pauli-para.netlify.app/pare-preview/blog/#models</link>
+      <guid>pare-journal-002</guid>
+      <description>PARÉ treats models as interchangeable intelligence beneath a durable project and execution layer.</description>
+    </item>
+    <item>
+      <title>From prompt to proof.</title>
+      <link>https://pauli-para.netlify.app/pare-preview/blog/#proof</link>
+      <guid>pare-journal-003</guid>
+      <description>Agentic work becomes dependable when completion is defined by evidence instead of confidence.</description>
+    </item>
+  </channel>
+</rss>
