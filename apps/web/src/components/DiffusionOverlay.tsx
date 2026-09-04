@@ -10,7 +10,15 @@ import {
 
 const STORAGE_KEY = "pare:chat-diffusion-enabled";
 const OVERLAY_ATTR = "data-pare-diffusion-overlay";
-const QUIET_REMOVE_MS = 520;
+const QUIET_REMOVE_MS = 760;
+const STREAM_BLOCK_SELECTOR = '.prose-block[data-stream-cursor="true"]';
+const STREAM_TEXT_SELECTOR = [
+  ".md-p",
+  ".md-h",
+  ".md-ul",
+  ".md-ol",
+  ".md-quote",
+].join(",");
 
 type ActiveRuntime = {
   target: HTMLElement;
@@ -25,13 +33,17 @@ type ActiveRuntime = {
   previousTransition: string;
 };
 
-function latestStreamingTextTarget(): HTMLElement | null {
-  const block = document.querySelector<HTMLElement>(
-    '.prose-block[data-stream-cursor="true"]',
-  );
+export function latestStreamingTextTarget(root: ParentNode = document): HTMLElement | null {
+  const blocks = root.querySelectorAll<HTMLElement>(STREAM_BLOCK_SELECTOR);
+  const block = blocks.item(blocks.length - 1);
   if (!block) return null;
-  const paragraphs = block.querySelectorAll<HTMLElement>(".md-p");
-  return paragraphs.item(paragraphs.length - 1) || block;
+
+  const candidates = block.querySelectorAll<HTMLElement>(STREAM_TEXT_SELECTOR);
+  for (let i = candidates.length - 1; i >= 0; i -= 1) {
+    const candidate = candidates.item(i);
+    if ((candidate.innerText || candidate.textContent || "").trim()) return candidate;
+  }
+  return block;
 }
 
 function copyTypography(source: HTMLElement, overlay: HTMLElement) {
@@ -97,10 +109,10 @@ function paintFrame(runtime: ActiveRuntime, framed: DiffusionFrameSlot[]) {
       continue;
     }
     const direction = slot.seed % 2 === 0 ? 1 : -1;
-    const x = direction * slot.jitter * 0.42;
-    const y = ((slot.seed % 5) - 2) * slot.jitter * 0.12;
-    const scale = 0.985 + slot.progress * 0.015;
-    span.style.filter = `blur(${slot.blur.toFixed(2)}px) brightness(${(0.76 + slot.progress * 0.24).toFixed(2)})`;
+    const x = direction * slot.jitter * 0.56;
+    const y = ((slot.seed % 5) - 2) * slot.jitter * 0.16;
+    const scale = 0.978 + slot.progress * 0.022;
+    span.style.filter = `blur(${(slot.blur * 1.18).toFixed(2)}px) brightness(${(0.70 + slot.progress * 0.30).toFixed(2)})`;
     span.style.opacity = slot.opacity.toFixed(3);
     span.style.transform = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) scale(${scale.toFixed(3)})`;
   }
@@ -144,6 +156,7 @@ export function DiffusionOverlay() {
       runtime.target.style.filter = runtime.previousFilter;
       runtime.target.style.transition = runtime.previousTransition;
       runtime.overlay.remove();
+      document.documentElement.removeAttribute("data-pare-diffusion-active");
       runtimeRef.current = null;
     };
 
@@ -180,6 +193,7 @@ export function DiffusionOverlay() {
         overlay.style.background = "transparent";
         copyTypography(target, overlay);
         document.body.appendChild(overlay);
+        document.documentElement.setAttribute("data-pare-diffusion-active", "true");
 
         runtime = {
           target,
@@ -195,21 +209,30 @@ export function DiffusionOverlay() {
         };
         runtimeRef.current = runtime;
         target.style.transition = "opacity 90ms ease, filter 90ms ease";
-        target.style.opacity = "0.12";
-        target.style.filter = "blur(1.2px)";
       }
 
       if (runtime.text !== text) {
         runtime.slots = reconcileDiffusionSlots(runtime.slots, text, now, {
-          mutationInterval: 34,
-          minDuration: 260,
-          durationSpread: 620,
-          lockVariance: 170,
+          mutationInterval: 38,
+          minDuration: 340,
+          durationSpread: 760,
+          lockVariance: 230,
           maxActive: 120,
         });
         runtime.text = text;
         runtime.lastMutationAt = now;
         rebuildOverlay(runtime);
+
+        // A streamed model can pause long enough for every current glyph to
+        // lock, then resume before the quiet-removal timer expires. The prior
+        // implementation restored the semantic target to full opacity when
+        // the pause locked, but did not hide it again when new deltas arrived,
+        // creating doubled text and making later diffusion effectively
+        // invisible. Re-arm the presentation layer on every real text delta.
+        runtime.target.style.transition = "opacity 90ms ease, filter 90ms ease";
+        runtime.target.style.opacity = "0.07";
+        runtime.target.style.filter = "blur(1.6px)";
+        document.documentElement.setAttribute("data-pare-diffusion-active", "true");
       }
       copyTypography(target, runtime.overlay);
       positionOverlay(runtime);
@@ -234,7 +257,7 @@ export function DiffusionOverlay() {
       const runtime = runtimeRef.current;
       if (!runtime) return;
       positionOverlay(runtime);
-      const frame = advanceDiffusionSlots(runtime.slots, now, { mutationInterval: 34 });
+      const frame = advanceDiffusionSlots(runtime.slots, now, { mutationInterval: 38 });
       paintFrame(runtime, frame.slots);
 
       if (frame.active === 0) {
@@ -261,6 +284,8 @@ export function DiffusionOverlay() {
       subtree: true,
       childList: true,
       characterData: true,
+      attributes: true,
+      attributeFilter: ["data-stream-cursor"],
     });
     window.addEventListener("scroll", scheduleCapture, true);
     window.addEventListener("resize", scheduleCapture);
@@ -279,6 +304,8 @@ export function DiffusionOverlay() {
   return (
     <button
       type="button"
+      data-testid="pare-diffusion-toggle"
+      data-pare-diffusion={reducedMotion ? "reduced" : enabled ? "on" : "off"}
       aria-pressed={effectiveEnabled}
       aria-label={reducedMotion ? "Diffusion disabled by reduced motion" : `Diffusion ${enabled ? "on" : "off"}`}
       disabled={reducedMotion}

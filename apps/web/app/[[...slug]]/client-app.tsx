@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import { installErrorHandlers } from '../../src/analytics/error-tracking';
@@ -9,27 +9,15 @@ import { DiffusionOverlay } from '../../src/components/DiffusionOverlay';
 import { installProductBrandGuard } from '../../src/i18n/product-copy';
 import { installWebObservability } from '../../src/observability/install';
 
-// Install browser exception handlers at module-load time, before any other
-// client code can throw. The hooks buffer events until AnalyticsProvider
-// finishes `bootstrapExceptionTracking()` with the PostHog key, so even
-// errors thrown during the dynamic import of `src/App` are captured.
-installErrorHandlers();
+const ENTRY_GATE_KEY = 'pare:effect-passed';
+const ENTRY_RETURN_KEY = 'pare:entry-return';
+const LANDING_PATH = '/pare-preview/';
 
-// Install the rest of the observability surface (long tasks, white-screen
-// detector, resource-error capture, boot timing, visibility tracking).
-// Same buffer + consent-bypass transport as the exception handler above
-// so events fired before AnalyticsProvider initialises still flush.
+installErrorHandlers();
 installWebObservability();
 
-// The product is a fully client-driven SPA — every component reads
-// localStorage, window.location, etc. — so we opt out of static-time
-// rendering for the entire tree. This keeps `next build --output export`
-// from trying to evaluate browser-only code while still emitting a real
-// shell HTML the daemon can serve as the SPA fallback.
 const App = dynamic(() => import('../../src/App').then((m) => m.App), {
   ssr: false,
-  // Keep the compatibility class on the outer node: the white-screen detector
-  // excludes this boot shell while deciding whether the real app mounted.
   loading: () => (
     <div className="od-loading-shell">
       <MatrixLoader />
@@ -38,12 +26,65 @@ const App = dynamic(() => import('../../src/App').then((m) => m.App), {
   ),
 });
 
+function BootShell() {
+  return (
+    <div className="od-loading-shell">
+      <MatrixLoader />
+      <span>PARÉ</span>
+    </div>
+  );
+}
+
+function cleanOneShotEntryQuery() {
+  const url = new URL(window.location.href);
+  if (!url.searchParams.has('pare-entry')) return;
+  url.searchParams.delete('pare-entry');
+  const clean = `${url.pathname}${url.search}${url.hash}`;
+  window.history.replaceState(window.history.state, '', clean);
+}
+
 export function ClientApp() {
-  // Some older components and upstream help surfaces still contain literal
-  // product copy outside the translation dictionaries. Keep the rendered app
-  // consistently PARÉ-branded while preserving technical compatibility names
-  // in source, code examples, storage, packages and runtime adapters.
-  useEffect(() => installProductBrandGuard(), []);
+  const [entryReady, setEntryReady] = useState(false);
+
+  useEffect(() => {
+    installProductBrandGuard();
+
+    const { pathname, search, hash } = window.location;
+
+    // The public root is never the Studio. Every hard entrance begins with
+    // the PARÉ crossword/Fusion story, including sovereign-daemon delivery.
+    if (pathname === '/') {
+      window.location.replace(LANDING_PATH);
+      return;
+    }
+
+    // The landing grants exactly one hard Studio boot. Consume that grant as
+    // soon as the Studio mounts. Internal SPA navigation stays uninterrupted,
+    // but a reload, new tab, direct deep-link, bookmark, or fresh browser entry
+    // must pass through the PARÉ effect again.
+    try {
+      if (sessionStorage.getItem(ENTRY_GATE_KEY) !== '1') {
+        sessionStorage.setItem(ENTRY_RETURN_KEY, `${pathname}${search}${hash}`);
+        window.location.replace(`${LANDING_PATH}#studio-entry`);
+        return;
+      }
+      sessionStorage.removeItem(ENTRY_GATE_KEY);
+      cleanOneShotEntryQuery();
+    } catch {
+      // Hardened privacy modes may block sessionStorage. The landing handoff
+      // therefore adds a one-request query proof which is removed immediately.
+      const params = new URLSearchParams(search);
+      if (params.get('pare-entry') !== '1') {
+        window.location.replace(`${LANDING_PATH}#studio-entry`);
+        return;
+      }
+      cleanOneShotEntryQuery();
+    }
+
+    setEntryReady(true);
+  }, []);
+
+  if (!entryReady) return <BootShell />;
 
   return (
     <>
