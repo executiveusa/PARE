@@ -3,42 +3,39 @@
 status: NOT READY
 next_stage: 05_slice
 mode: brownfield
-runtime_candidate_revision: cf428b5c2a3fe06a5b584032970691a4d4626e44
+code_payload_through_revision: 0fb6b050610138683925e3644f8652f100565d1b
 bar_status: locked-by-owner-context
 lock_status: recorded
 graph_status: admitted
-spec_status: slice-1-active
+spec_status: runtime-handoff-ready-after-ci
 latest_verified_slice: none
 production_verified: false
 
 ## Current blocker
-The owner-facing Studio/release branch exists, but the sovereign VPS runtime has not yet produced fresh evidence of a healthy daemon on `127.0.0.1:7456`, public `/pare/api/health`, Netlify proxy health, or a real model SSE response from the current runtime candidate. Reported VPS resource pressure/load remains runtime evidence to re-check, not proof of completion.
+Code-side preparation now includes the daemon launch repair, private/developer remote MCP gateway, Compose services, environment contract, luxury landing, agentic Journal and distribution-readiness assets. None of that substitutes for runtime evidence. The shared VPS still must prove host stability, daemon/MCP health, Caddy routing, real providers, real Studio SSE, diffusion ON/OFF and persistent project access from the exact release revision.
 
 ## Active slice
-Slice 1 — Sovereign runtime activation proof.
+Slice 1 — Sovereign runtime activation + machine gateway proof.
 
-A bounded repository defect was found during the walk test: `deploy/Dockerfile` launched `apps/daemon/dist/cli.js --no-open`, while the persistent HTTP runtime requires the `daemon start --no-open` subcommand. Commit `cf428b5c2a3fe06a5b584032970691a4d4626e44` repairs the container entry command. This repair is not runtime proof; the VPS must rebuild and verify it.
+The operational target now has two loopback-published services under one Docker Compose authority:
+- `pare-daemon` → host `127.0.0.1:7456`;
+- `pare-mcp` → host `127.0.0.1:7457`, dependent on daemon health.
 
-Owned resources for the operational slice:
-- VPS PARÉ checkout and one chosen daemon authority only;
-- `/data/pare` read/preserve;
-- Caddy PARÉ route only if local health is green;
-- no unrelated service mutation without a consequential gate;
-- no main/production mutation.
+Systemd must not compete with Docker for the PARÉ daemon. `/data/pare` remains protected persistent state.
 
 ## Mandatory walk-test receipt
 
 WALK TEST
 repo: executiveusa/PARE
-identity: PARÉ sovereign AI studio/runtime; owner personal product, not MACS Digital Media Agent Max
+identity: PARÉ sovereign AI studio/runtime; owner product, separate from MACS Digital Media / Agent Max
 router: `runs/pare-runtime-hardening-20260904/` + repository agent instructions
-architecture: Netlify Studio -> HTTPS/Caddy -> PARÉ daemon :7456 -> provider/agent adapters -> SSE/artifacts
-material dependencies checked: personal Hermes ICM governance; MACS Digital Media identity boundary; current PARÉ release PR
-protected resources: `/data/pare`, unrelated VPS workloads, secrets, main branch, production deploy
-proof gate: local :7456 health first, then public/Netlify health, two real providers, real Studio, diffusion ON/OFF
+architecture: Netlify Studio -> HTTPS/Caddy -> PARÉ daemon :7456; agent/private MCP -> Caddy -> pare-mcp :7457 -> authenticated daemon API; both address owner-controlled `/data/pare`
+material dependencies checked: personal Hermes ICM governance; MACS identity boundary; PARÉ PR #5; Netlify preview; Claude compatibility plugin; current OpenAI/Product Hunt distribution requirements
+protected resources: `/data/pare`, unrelated VPS workloads, reusable secrets, main branch, production deploy, personal-Hermes/MACS identity separation
+proof gate: exact revision -> host stability -> local daemon -> local MCP/auth -> public Caddy -> Netlify proxy -> two providers -> real Studio -> diffusion -> persistence/API/CLI/MCP -> fresh verifier/Gauntlet
 rollback: run `ROLLBACK.md`; preserve data volume and prior deployment/config
-human gate: production merge/promotion remains explicit owner approval
-result: PASS for bounded implementation admission; runtime gates remain unverified
+human gate: production merge/promotion and external marketplace/public launch remain explicit owner approval
+result: PASS for implementation/handoff admission; runtime gates remain unverified
 
 ## Single next action
-Sync the VPS to the final release-branch head containing the Docker launch repair, choose exactly one daemon authority, rebuild/start PARÉ, and obtain fresh host-stability + `127.0.0.1:7456/api/health` evidence. Do not advance to public routing or model claims until local health passes.
+Wait for exact-head CI/build evidence. If code-side checks are green (or one bounded defect is repaired), hand the exact final release SHA to the authorized Gemini/VPS operator. It must sync `/root/PARE`, make Docker Compose the sole PARÉ service authority, resolve real secrets from Infisical/server environment without printing them, build/start both services, merge the PARÉ routes into Caddy, and execute G1–G14 sequentially. Do not merge main or promote production before PREVIEW VERIFIED and owner `approve`.
