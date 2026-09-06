@@ -1,0 +1,69 @@
+name: pare-entry-diffusion-smoke
+
+on:
+  pull_request:
+    paths:
+      - 'apps/web/public/pare-preview/**'
+      - 'apps/web/public/_redirects'
+      - 'apps/web/app/[[...slug]]/client-app.tsx'
+      - 'apps/web/src/components/DiffusionOverlay.tsx'
+      - 'apps/web/tests/diffusion*.test.ts*'
+      - 'apps/web/tests/pare-preview-crossword.test.ts'
+      - '.github/workflows/pare-entry-diffusion-smoke.yml'
+  # Same-repo CI currently resolves through the private Nexu runner fleet.
+  # Keep this bounded release smoke independently runnable on GitHub-hosted
+  # infrastructure so a runner outage cannot erase release evidence.
+  push:
+    branches:
+      - fix/pare-crossword-hero-postmerge-20260904
+    paths:
+      - 'apps/web/public/pare-preview/**'
+      - 'apps/web/public/_redirects'
+      - 'apps/web/app/[[...slug]]/client-app.tsx'
+      - 'apps/web/src/components/DiffusionOverlay.tsx'
+      - 'apps/web/tests/diffusion*.test.ts*'
+      - 'apps/web/tests/pare-preview-crossword.test.ts'
+      - '.github/workflows/pare-entry-diffusion-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pare-entry-diffusion-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: PARÉ entry + diffusion smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-workspace
+
+      - name: Run focused PARÉ tests
+        run: >-
+          pnpm --filter @open-design/web test --
+          tests/pare-preview-crossword.test.ts
+          tests/diffusion.test.ts
+          tests/diffusion-overlay-contract.test.ts
+          tests/diffusion-overlay.test.tsx
+
+      - name: Typecheck web
+        run: pnpm --filter @open-design/web typecheck
+
+      - name: Verify landing doorway files
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -F '/  /pare-preview/  302!' apps/web/public/_redirects
+          grep -F 'id="studio-entry"' apps/web/public/pare-preview/index.html
+          grep -F 'data-enter-studio' apps/web/public/pare-preview/index.html
+          grep -F "const ENTRY_GATE_KEY = 'pare:effect-passed'" 'apps/web/app/[[...slug]]/client-app.tsx'
+          grep -F 'sessionStorage.removeItem(ENTRY_GATE_KEY)' 'apps/web/app/[[...slug]]/client-app.tsx'
+          grep -F '<DiffusionOverlay />' 'apps/web/app/[[...slug]]/client-app.tsx'
+          grep -F 'data-testid="pare-diffusion-toggle"' apps/web/src/components/DiffusionOverlay.tsx
