@@ -1,0 +1,13 @@
+{
+  "version": "design-engineering-workflows.v1",
+  "interface": "design-chat",
+  "workflows": [
+    {"workflow_id":"audit-and-cut.v1","name":"Audit + Cut","mode":"brownfield","mutates_by_default":false,"required_skills":["adhd-elegant-simplicity","design-engineering-workflows"],"optional_skills":["refero-design"]},
+    {"workflow_id":"reference-lock.v1","name":"Reference Lock","mode":"greenfield-or-brownfield","mutates_by_default":false,"required_skills":["adhd-elegant-simplicity","refero-design","design-engineering-workflows"]},
+    {"workflow_id":"brownfield-rescue.v1","name":"Brownfield Rescue","mode":"brownfield","required_skills":["adhd-elegant-simplicity","design-engineering-workflows","refero-design"]},
+    {"workflow_id":"greenfield-interface.v1","name":"Greenfield Interface","mode":"greenfield","required_skills":["adhd-elegant-simplicity","refero-design","design-engineering-workflows"]},
+    {"workflow_id":"visual-qa.v1","name":"Visual QA","mode":"validation","required_skills":["adhd-elegant-simplicity","refero-design","design-engineering-workflows"]}
+  ],
+  "status_states":["DESIGNED","IMPLEMENTED","TESTED","READY_FOR_PREVIEW","PREVIEW_VERIFIED","PRODUCTION_VERIFIED"],
+  "law":"Expose outcomes and a small named workflow set through design chat. Keep internal agent/provider/workflow-graph complexity behind progressive disclosure."
+}
