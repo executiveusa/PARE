@@ -1,0 +1,107 @@
+{
+  "$schema": "https://open-design.ai/schemas/plugin.v1.json",
+  "specVersion": "1.0.0",
+  "name": "example-landing-page-director",
+  "title": "Landing Page Director",
+  "version": "0.1.0",
+  "description": "Evidence-led landing-page creative direction. Grills the outcome before building, locks one conversion strategy and design direction, then requires an independent adversarial PARE Gauntlet before release.",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "PARE",
+    "url": "https://github.com/executiveusa/PARE"
+  },
+  "tags": [
+    "first-party",
+    "landing-page",
+    "conversion",
+    "creative-direction",
+    "mobile-first",
+    "brand-system",
+    "gauntlet",
+    "anti-slop"
+  ],
+  "compat": {
+    "agentSkills": [
+      { "path": "./SKILL.md" }
+    ]
+  },
+  "od": {
+    "kind": "scenario",
+    "taskKind": "new-generation",
+    "mode": "prototype",
+    "platform": "responsive",
+    "scenario": "design",
+    "surface": "web",
+    "preview": {
+      "type": "html",
+      "entry": "./index.html"
+    },
+    "useCase": {
+      "query": {
+        "en": "Use Landing Page Director. Do not build yet. Start in Grill Mode and ask only the highest-leverage unresolved question at a time. Inspect existing evidence before asking for information that can be discovered. Establish the Project Lock, claims ledger, one conversion contract, reference ledger, three genuinely different creative territories, and a Design Lock. Then build the golden conversion slice mobile-first. The PARE Gauntlet is mandatory and the builder may not approve its own work. Repair every P0/P1 finding and rerun the release Gauntlet. No vibe-code slop, visual cloning, unsupported proof, generic CTA language, or compressed-desktop mobile."
+      },
+      "exampleOutputs": [
+        {
+          "path": "./index.html",
+          "title": "Landing Page Director workflow"
+        }
+      ]
+    },
+    "inputs": [
+      {
+        "name": "outcome",
+        "label": "Desired outcome",
+        "type": "string",
+        "required": false,
+        "placeholder": "What should this page cause the right visitor to do?"
+      },
+      {
+        "name": "audience",
+        "label": "Audience",
+        "type": "string",
+        "required": false,
+        "placeholder": "Who is arriving and what triggered the visit?"
+      },
+      {
+        "name": "existingPage",
+        "label": "Existing page or product",
+        "type": "string",
+        "required": false,
+        "placeholder": "URL, repository path, or brownfield context"
+      },
+      {
+        "name": "primaryCta",
+        "label": "Primary CTA",
+        "type": "string",
+        "required": false,
+        "placeholder": "Leave blank if this should be resolved in Grill Mode"
+      }
+    ],
+    "context": {
+      "skills": [
+        { "path": "./SKILL.md" }
+      ],
+      "designSystem": {
+        "primary": true
+      },
+      "assets": [
+        "./index.html",
+        "./references/project-lock.md",
+        "./references/grill-protocol.md",
+        "./references/anti-slop.md",
+        "./references/gauntlet.md",
+        "./references/mobile.md",
+        "./references/contracts.md"
+      ]
+    },
+    "pipeline": {
+      "stages": [
+        {
+          "id": "direct",
+          "atoms": ["file-write", "live-artifact"]
+        }
+      ]
+    },
+    "capabilities": ["prompt:inject", "fs:write"]
+  }
+}
