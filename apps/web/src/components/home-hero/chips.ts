@@ -26,14 +26,13 @@ import type { IconName } from '../Icon';
 // Plugin ids the chip rail can dispatch to. Most chips route to a
 // `DefaultScenarioPluginId` so the same fallback table the daemon
 // uses for naked Home queries stays the source of truth. Specialised
-// chips (HyperFrames lives under `plugins/_official/examples/hyperframes/`
-// and surfaces as the `example-hyperframes` bundled plugin id) bypass
-// the default table by carrying their own plugin id directly. The
+// chips carry their own bundled scenario plugin id directly. The
 // curated union keeps typo safety while letting the rail evolve
 // independently of the default-binding mapping.
 export type ChipScenarioPluginId =
   | DefaultScenarioPluginId
   | 'example-hyperframes'
+  | 'example-landing-page-director'
   // Powered-preview scenarios: real-time GPU / off-main-thread artifacts that
   // render in the cross-origin-isolated "powered preview" iframe. Kept as
   // explicit members — like example-hyperframes — so the rail can name a
@@ -117,6 +116,19 @@ export const HOME_HERO_CHIPS: ReadonlyArray<HomeHeroChip> = [
     // into the Brand Kit tab's extraction flow instead of binding a scenario
     // plugin to the composer.
     action: { kind: 'create-brand-kit' },
+  },
+  {
+    id: 'landing-page',
+    label: 'Create Landing Page',
+    icon: 'globe',
+    group: 'create',
+    description: 'Conversion-led landing pages',
+    hint: 'Start in Grill Mode, lock one conversion strategy and design direction, then build and pass the mandatory PARE Gauntlet.',
+    action: {
+      kind: 'apply-scenario',
+      pluginId: 'example-landing-page-director',
+      projectKind: 'prototype',
+    },
   },
   {
     id: 'prototype',
@@ -381,10 +393,11 @@ export function chipsForGroup(group: ChipGroup): HomeHeroChip[] {
   return HOME_HERO_CHIPS.filter((c) => c.group === group);
 }
 
-// Fixed Home information architecture. Only these ten output types are
+// Fixed Home information architecture. Only these eleven output types are
 // top-level choices. Action-only create entries (for example Create Design
 // System) are intentionally excluded.
 export const CREATE_RAIL_ORDER = [
+  'landing-page',
   'prototype',
   'deck',
   'image',
