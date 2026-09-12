@@ -1,6 +1,5 @@
 # Public entry always begins with the PARÉ effect / crossword story.
 /  /pare-preview/  302!
-/pare-preview  /pare-preview/  301!
 
 # Proxy API calls to the PARÉ VPS Gateway
 /api/*  https://api.thepaulieffect.com/pare/api/:splat  200!
