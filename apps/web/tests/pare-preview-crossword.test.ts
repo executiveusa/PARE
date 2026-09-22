@@ -75,11 +75,28 @@ describe('PARÉ preview crossword hero', () => {
   });
 
   it('shortens the mandatory doorway and labels the static Studio frame honestly', () => {
-    expect(html).toContain('.hero{position:relative;height:172svh}');
-    expect(html).toContain('.hero{height:148svh}');
+    expect(html).toContain('.hero{position:relative;height:154svh}');
+    expect(html).toContain('.hero{height:132svh}');
     expect(html).toContain('id="product-proof"');
     expect(html).toContain('PARÉ Studio · interface preview');
     expect(html).not.toContain('<section class="question">');
+  });
+
+  it('puts product before philosophy and removes duplicate full-screen brand explanation', () => {
+    expect(html).not.toContain('class="statement"');
+    expect(html.indexOf('id="product-proof"')).toBeLessThan(html.indexOf('id="manifesto"'));
+    expect(html).toContain('PARÉ · pare /per/ · verb · to reduce by removing what is unnecessary.');
+    expect(html).toContain('.manifesto{position:relative;min-height:118svh}');
+  });
+
+  it('compresses lower-page architecture and conversion sections without deleting access modes', () => {
+    expect(html).toContain('.interfaces{min-height:72svh');
+    expect(html).toContain('.final{min-height:74svh');
+    expect(html).toContain('Studio for people.<br>Interfaces for agents.');
+    expect(html).toContain('<b>Studio</b>');
+    expect(html).toContain('<b>API</b>');
+    expect(html).toContain('<b>MCP</b>');
+    expect(html).toContain('<b>CLI</b>');
   });
 
 });
