@@ -5,7 +5,7 @@ on:
     paths:
       - 'apps/web/public/pare-preview/**'
       - 'apps/web/public/_redirects'
-      - 'apps/web/app/**/client-app.tsx'
+      - 'apps/web/app/[[...slug]]/client-app.tsx'
       - 'apps/web/src/components/DiffusionOverlay.tsx'
       - 'apps/web/tests/diffusion*.test.ts*'
       - 'apps/web/tests/pare-preview-crossword.test.ts'
@@ -21,7 +21,7 @@ on:
     paths:
       - 'apps/web/public/pare-preview/**'
       - 'apps/web/public/_redirects'
-      - 'apps/web/app/**/client-app.tsx'
+      - 'apps/web/app/[[...slug]]/client-app.tsx'
       - 'apps/web/src/components/DiffusionOverlay.tsx'
       - 'apps/web/tests/diffusion*.test.ts*'
       - 'apps/web/tests/pare-preview-crossword.test.ts'
@@ -49,7 +49,7 @@ jobs:
 
       - name: Run focused PARÉ tests
         run: >-
-          pnpm --filter @open-design/web test --
+          pnpm --filter @open-design/web exec vitest run -c vitest.config.ts
           tests/pare-preview-crossword.test.ts
           tests/diffusion.test.ts
           tests/diffusion-overlay-contract.test.ts
@@ -65,9 +65,9 @@ jobs:
           grep -F '/  /pare-preview/  302!' apps/web/public/_redirects
           grep -F 'id="studio-entry"' apps/web/public/pare-preview/index.html
           grep -F 'data-enter-studio' apps/web/public/pare-preview/index.html
-          grep -F "const ENTRY_GATE_KEY = 'pare:effect-passed'" 'apps/web/app/**/client-app.tsx'
-          grep -F 'sessionStorage.removeItem(ENTRY_GATE_KEY)' 'apps/web/app/**/client-app.tsx'
-          grep -F '<DiffusionOverlay />' 'apps/web/app/**/client-app.tsx'
+          grep -F "const ENTRY_GATE_KEY = 'pare:effect-passed'" 'apps/web/app/[[...slug]]/client-app.tsx'
+          grep -F 'sessionStorage.removeItem(ENTRY_GATE_KEY)' 'apps/web/app/[[...slug]]/client-app.tsx'
+          grep -F '<DiffusionOverlay />' 'apps/web/app/[[...slug]]/client-app.tsx'
           grep -F 'data-testid="pare-diffusion-toggle"' apps/web/src/components/DiffusionOverlay.tsx
 
 
