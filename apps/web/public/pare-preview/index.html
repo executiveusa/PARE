@@ -80,5 +80,6 @@ wireStudioEntry();
 addEventListener('scroll',request,{passive:true});addEventListener('resize',invalidate,{passive:true});addEventListener('pageshow',invalidate);document.addEventListener('visibilitychange',()=>{if(!document.hidden)invalidate()});if(document.fonts?.ready)document.fonts.ready.then(invalidate);request();setTimeout(invalidate,250);
 })();
 </script>
+<!-- pare-playwright-proof: PR11 -->
 </body>
 </html>
