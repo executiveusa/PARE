@@ -62,13 +62,13 @@ test.describe('PARÉ public doorway', () => {
     await page.getByRole('link', { name: /See how it works/ }).click();
     await expect(page.locator('#product-proof')).toBeInViewport();
 
-    const order = await page.evaluate(() => {
+    const productPrecedesManifesto = await page.evaluate(() => {
       const product = document.querySelector('#product-proof');
       const manifesto = document.querySelector('#manifesto');
       if (!product || !manifesto) throw new Error('Expected product and manifesto sections');
-      return product.compareDocumentPosition(manifesto);
+      return Boolean(product.compareDocumentPosition(manifesto) & Node.DOCUMENT_POSITION_FOLLOWING);
     });
-    expect(order & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(productPrecedesManifesto).toBe(true);
 
     expect(browserErrors).toEqual([]);
   });
