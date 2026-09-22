@@ -91,8 +91,8 @@ describe('PARÉ preview crossword hero', () => {
 
   it('compresses lower-page architecture and conversion sections without deleting access modes', () => {
     expect(html).toContain('.interfaces{min-height:72svh');
-    expect(html).toContain('.final{min-height:74svh');
-    expect(html).toContain('Studio for people.<br>Interfaces for agents.');
+    expect(html).toContain('.final{min-height:72svh');
+    expect(html).toContain('Studio for people.<br>One system for agents.');
     expect(html).toContain('<b>Studio</b>');
     expect(html).toContain('<b>API</b>');
     expect(html).toContain('<b>MCP</b>');
