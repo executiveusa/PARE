@@ -5,7 +5,7 @@ on:
     paths:
       - 'apps/web/public/pare-preview/**'
       - 'apps/web/public/_redirects'
-      - 'apps/web/app/[[...slug]]/client-app.tsx'
+      - 'apps/web/app/**/client-app.tsx'
       - 'e2e/ui/pare-landing.test.ts'
       - 'e2e/package.json'
       - '.github/workflows/pare-landing-playwright.yml'
