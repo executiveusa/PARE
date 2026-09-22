@@ -70,6 +70,10 @@ test.describe('PARÉ public doorway', () => {
     });
     expect(productPrecedesManifesto).toBe(true);
 
+    await page.screenshot({
+      path: 'ui/reports/test-results/pare-landing-desktop.png',
+      fullPage: true,
+    });
     expect(browserErrors).toEqual([]);
   });
 
@@ -86,6 +90,10 @@ test.describe('PARÉ public doorway', () => {
     await page.locator('#product-proof').scrollIntoViewIfNeeded();
     await expect(page.locator('#product-proof')).toBeInViewport();
     await expectNoHorizontalOverflow(page);
+    await page.screenshot({
+      path: 'ui/reports/test-results/pare-landing-mobile.png',
+      fullPage: true,
+    });
 
     expect(browserErrors).toEqual([]);
   });
@@ -110,5 +118,12 @@ test.describe('PARÉ public doorway', () => {
 
     await page.waitForURL(/\/projects(?:\?|$)/, { timeout: 15_000 });
     expect(page.url()).toContain('pare-entry=1');
+
+    const diffusion = page.getByTestId('pare-diffusion-toggle');
+    await expect(diffusion).toBeVisible({ timeout: 15_000 });
+    await page.screenshot({
+      path: 'ui/reports/test-results/pare-studio-after-entry.png',
+      fullPage: true,
+    });
   });
 });
