@@ -122,11 +122,18 @@ test.describe('PARÉ public doorway', () => {
     const diffusion = page.getByTestId('pare-diffusion-toggle');
     await expect(diffusion).toBeVisible({ timeout: 15_000 });
 
-    // The real product must load, not just the dynamic-import boot shell.
+    // The real Studio route is the Projects browser. The hidden Home view may
+    // remain mounted for SPA state, so do not mistake that for an entry failure.
     await expect(page.locator('.od-loading-shell')).toHaveCount(0, { timeout: 20_000 });
-    const home = page.getByTestId('entry-view-home');
-    await expect(home).toBeVisible({ timeout: 20_000 });
-    await expect(home).toHaveAttribute('data-active', 'true');
+    await expect(page.getByText('Projects', { exact: true }).first()).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByRole('button', { name: /New project/i })).toBeVisible({ timeout: 20_000 });
+
+    const gateState = await page.evaluate(() => ({
+      effectPassed: sessionStorage.getItem('pare:effect-passed'),
+      url: window.location.pathname + window.location.search,
+    }));
+    expect(gateState.effectPassed).toBeNull();
+    expect(gateState.url.startsWith('/projects')).toBe(true);
 
     await page.screenshot({
       path: 'ui/reports/test-results/pare-studio-after-entry.png',
