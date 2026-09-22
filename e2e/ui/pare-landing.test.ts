@@ -121,6 +121,13 @@ test.describe('PARÉ public doorway', () => {
 
     const diffusion = page.getByTestId('pare-diffusion-toggle');
     await expect(diffusion).toBeVisible({ timeout: 15_000 });
+
+    // The real product must load, not just the dynamic-import boot shell.
+    await expect(page.locator('.od-loading-shell')).toHaveCount(0, { timeout: 20_000 });
+    const home = page.getByTestId('entry-view-home');
+    await expect(home).toBeVisible({ timeout: 20_000 });
+    await expect(home).toHaveAttribute('data-active', 'true');
+
     await page.screenshot({
       path: 'ui/reports/test-results/pare-studio-after-entry.png',
       fullPage: true,
