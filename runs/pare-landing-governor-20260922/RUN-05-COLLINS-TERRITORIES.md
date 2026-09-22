@@ -245,3 +245,11 @@ Allowed owner responses:
 - C — Living Crossword
 
 Recommended: A.
+
+
+## Owner selection
+Selected by owner: **A — Editorial Reduction**
+Selection date: 2026-09-22
+
+Gate Four: PASSED.
+Final composition may converge on Territory A. B and C remain reference explorations only and must not be averaged into the selected direction.
