@@ -56,4 +56,30 @@ describe('PARÉ preview crossword hero', () => {
     expect(clientApp).toContain("import { DiffusionOverlay } from '../../src/components/DiffusionOverlay'");
     expect(clientApp).toContain('<DiffusionOverlay />');
   });
+
+  it('brings product truth and the primary action into the opening experience', () => {
+    expect(html).toContain('Owner-controlled AI Studio');
+    expect(html).toContain('Turn an idea into finished digital work without managing the models, agents and infrastructure underneath it.');
+    expect(html).toContain('>Try PARÉ ↗</a>');
+    expect(html).toContain('href="#product-proof">See how it works ↓</a>');
+  });
+
+  it('reduces navigation and removes unverified social-platform root links', () => {
+    expect(html).toContain('<a class="mark" href="#top">PARÉ</a>');
+    expect(html).toContain('class="primaryNav"');
+    expect(html).not.toContain('>Journal</a></div></nav>');
+    expect(html).not.toContain('https://www.instagram.com/');
+    expect(html).not.toContain('https://www.facebook.com/');
+    expect(html).not.toContain('https://dribbble.com/');
+    expect(html).not.toContain('https://www.behance.net/');
+  });
+
+  it('shortens the mandatory doorway and labels the static Studio frame honestly', () => {
+    expect(html).toContain('.hero{position:relative;height:172svh}');
+    expect(html).toContain('.hero{height:148svh}');
+    expect(html).toContain('id="product-proof"');
+    expect(html).toContain('PARÉ Studio · interface preview');
+    expect(html).not.toContain('<section class="question">');
+  });
+
 });
