@@ -45,12 +45,8 @@ test.describe('PARÉ public doorway', () => {
 
     await page.goto(landingUrl, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByText('PARÉ Studio')).toBeVisible();
-    await expect(
-      page.getByRole('heading', {
-        name: 'Turn an idea into finished digital work.',
-      }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Design without a design team.' })).toBeVisible();
+    await expect(page.getByText('From idea to finished digital work.', { exact: true })).toBeVisible();
 
     const tryPare = page.getByRole('link', { name: /Try PARÉ/ }).first();
     await expect(tryPare).toBeVisible();
@@ -87,7 +83,7 @@ test.describe('PARÉ public doorway', () => {
 
     await page.goto(landingUrl, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByText('PARÉ Studio')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Design without a design team.' })).toBeVisible();
     await expect(page.getByRole('link', { name: /Try PARÉ/ }).first()).toBeVisible();
     await expectNoHorizontalOverflow(page);
 
@@ -108,7 +104,7 @@ test.describe('PARÉ public doorway', () => {
 
     await page.goto(landingUrl, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByText('PARÉ Studio')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Design without a design team.' })).toBeVisible();
     await expect(page.locator('#heroCaption')).toHaveCSS('opacity', '1');
     await expect(page.getByRole('link', { name: /Try PARÉ/ }).first()).toBeVisible();
     await expectNoHorizontalOverflow(page);
