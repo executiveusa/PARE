@@ -47,6 +47,8 @@ test.describe('PARÉ public doorway', () => {
 
     await expect(page.getByRole('heading', { name: 'Design without a design team.' })).toBeVisible();
     await expect(page.getByText('From idea to finished digital work.', { exact: true })).toBeVisible();
+    await expect(page.locator('.cwCell.target')).toHaveCount(4);
+    await expect.poll(async () => page.locator('.cwCell.target').allTextContents(), { timeout: 5000 }).toEqual(['P', 'A', 'R', 'É']);
 
     const tryPare = page.getByRole('link', { name: /Try PARÉ/ }).first();
     await expect(tryPare).toBeVisible();
@@ -85,6 +87,7 @@ test.describe('PARÉ public doorway', () => {
 
     await expect(page.getByRole('heading', { name: 'Design without a design team.' })).toBeVisible();
     await expect(page.getByRole('link', { name: /Try PARÉ/ }).first()).toBeVisible();
+    await expect.poll(async () => page.locator('.cwCell.target').allTextContents(), { timeout: 5000 }).toEqual(['P', 'A', 'R', 'É']);
     await expectNoHorizontalOverflow(page);
 
     await page.locator('#product-proof').scrollIntoViewIfNeeded();
