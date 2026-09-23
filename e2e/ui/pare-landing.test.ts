@@ -45,10 +45,10 @@ test.describe('PARÉ public doorway', () => {
 
     await page.goto(landingUrl, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByText('Owner-controlled AI Studio')).toBeVisible();
+    await expect(page.getByText('PARÉ Studio')).toBeVisible();
     await expect(
       page.getByRole('heading', {
-        name: 'Turn an idea into finished digital work without managing the models, agents and infrastructure underneath it.',
+        name: 'Turn an idea into finished digital work.',
       }),
     ).toBeVisible();
 
@@ -62,9 +62,9 @@ test.describe('PARÉ public doorway', () => {
     await page.getByRole('link', { name: /See how it works/ }).click();
     await expect(page.locator('#product-proof')).toBeInViewport();
     await expect(page.getByText('INPUT', { exact: true })).toBeVisible();
-    await expect(page.getByText('PARÉ ACTION', { exact: true })).toBeVisible();
+    await expect(page.getByText('ACTION', { exact: true })).toBeVisible();
     await expect(page.getByText('RESULT', { exact: true })).toBeVisible();
-    await expect(page.getByText('#11 · draft', { exact: true })).toBeVisible();
+    await expect(page.getByText('PR #11', { exact: true })).toBeVisible();
 
     const productPrecedesManifesto = await page.evaluate(() => {
       const product = document.querySelector('#product-proof');
@@ -87,7 +87,7 @@ test.describe('PARÉ public doorway', () => {
 
     await page.goto(landingUrl, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByText('Owner-controlled AI Studio')).toBeVisible();
+    await expect(page.getByText('PARÉ Studio')).toBeVisible();
     await expect(page.getByRole('link', { name: /Try PARÉ/ }).first()).toBeVisible();
     await expectNoHorizontalOverflow(page);
 
@@ -108,7 +108,7 @@ test.describe('PARÉ public doorway', () => {
 
     await page.goto(landingUrl, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByText('Owner-controlled AI Studio')).toBeVisible();
+    await expect(page.getByText('PARÉ Studio')).toBeVisible();
     await expect(page.locator('#heroCaption')).toHaveCSS('opacity', '1');
     await expect(page.getByRole('link', { name: /Try PARÉ/ }).first()).toBeVisible();
     await expectNoHorizontalOverflow(page);
