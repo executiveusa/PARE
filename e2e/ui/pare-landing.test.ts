@@ -39,38 +39,40 @@ async function expectCrosswordMoves(page: Page) {
 }
 
 test.describe('PARÉ public doorway', () => {
-  test('[P0] desktop explains the product, exposes Try PARÉ, and animates the crossword', async ({ page }) => {
+  test('[P0] desktop scrambles, resolves to PARÉ, states the promise, and keeps the quote', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     const browserErrors = collectBrowserErrors(page);
 
     await page.goto(landingUrl, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByRole('heading', { name: 'Design without a design team.' })).toBeVisible();
-    await expect(page.getByText('From idea to finished digital work.', { exact: true })).toBeVisible();
     await expect(page.locator('.cwCell.target')).toHaveCount(4);
-    await expect.poll(async () => page.locator('.cwCell.target').allTextContents(), { timeout: 5000 }).toEqual(['P', 'A', 'R', 'É']);
 
-    const tryPare = page.getByRole('link', { name: /Try PARÉ/ }).first();
-    await expect(tryPare).toBeVisible();
-    await expect(page.getByRole('link', { name: /See how it works/ })).toBeVisible();
+    const earlyLetters = await page.locator('.cwCell').allTextContents();
+    await page.waitForTimeout(700);
+    const scrambledLetters = await page.locator('.cwCell').allTextContents();
+    expect(scrambledLetters).not.toEqual(earlyLetters);
 
+    await expect.poll(
+      async () => page.locator('.cwCell.target').allTextContents(),
+      { timeout: 8_000 },
+    ).toEqual(['P', 'A', 'R', 'É']);
+
+    await expect(
+      page.getByRole('heading', { name: 'Design without a design team.' }),
+    ).toBeVisible({ timeout: 8_000 });
+    await expect(
+      page.getByText('From idea to finished digital work.', { exact: true }),
+    ).toBeVisible();
+
+    await expect(page.getByRole('link', { name: /Enter PARÉ/ }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /The idea/ })).toBeVisible();
     await expectNoHorizontalOverflow(page);
-    await expectCrosswordMoves(page);
 
-    await page.getByRole('link', { name: /See how it works/ }).click();
-    await expect(page.locator('#product-proof')).toBeInViewport();
-    await expect(page.getByText('INPUT', { exact: true })).toBeVisible();
-    await expect(page.getByText('ACTION', { exact: true })).toBeVisible();
-    await expect(page.getByText('RESULT', { exact: true })).toBeVisible();
-    await expect(page.getByText('PR #11', { exact: true })).toBeVisible();
-
-    const productPrecedesManifesto = await page.evaluate(() => {
-      const product = document.querySelector('#product-proof');
-      const manifesto = document.querySelector('#manifesto');
-      if (!product || !manifesto) throw new Error('Expected product and manifesto sections');
-      return Boolean(product.compareDocumentPosition(manifesto) & Node.DOCUMENT_POSITION_FOLLOWING);
-    });
-    expect(productPrecedesManifesto).toBe(true);
+    await page.getByRole('link', { name: /The idea/ }).click();
+    await expect(page.locator('#manifesto')).toBeInViewport();
+    await expect(page.getByText(/Perfection is achieved/)).toBeVisible();
+    await expect(page.getByText(/nothing left to take away/)).toBeVisible();
+    await expect(page.getByText(/Antoine de Saint-Exupéry/)).toBeVisible();
 
     await page.screenshot({
       path: 'ui/reports/test-results/pare-landing-desktop.png',
@@ -79,57 +81,66 @@ test.describe('PARÉ public doorway', () => {
     expect(browserErrors).toEqual([]);
   });
 
-  test('[P0] mobile remains readable and overflow-free at 390x844', async ({ page }) => {
+  test('[P0] mobile entrance remains readable and overflow-free at 390x844', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const browserErrors = collectBrowserErrors(page);
 
     await page.goto(landingUrl, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByRole('heading', { name: 'Design without a design team.' })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Try PARÉ/ }).first()).toBeVisible();
-    await expect.poll(async () => page.locator('.cwCell.target').allTextContents(), { timeout: 5000 }).toEqual(['P', 'A', 'R', 'É']);
+    await expect.poll(
+      async () => page.locator('.cwCell.target').allTextContents(),
+      { timeout: 8_000 },
+    ).toEqual(['P', 'A', 'R', 'É']);
+    await expect(
+      page.getByRole('heading', { name: 'Design without a design team.' }),
+    ).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByRole('link', { name: /Enter PARÉ/ }).first()).toBeVisible();
     await expectNoHorizontalOverflow(page);
 
-    await page.locator('#product-proof').scrollIntoViewIfNeeded();
-    await expect(page.locator('#product-proof')).toBeInViewport();
+    await page.locator('#manifesto').scrollIntoViewIfNeeded();
+    await expect(page.getByText(/nothing left to take away/)).toBeVisible();
     await expectNoHorizontalOverflow(page);
+
     await page.screenshot({
       path: 'ui/reports/test-results/pare-landing-mobile.png',
       fullPage: true,
     });
-
     expect(browserErrors).toEqual([]);
   });
 
-  test('[P1] reduced-motion visitors receive a readable resolved doorway', async ({ page }) => {
+  test('[P1] reduced-motion visitors receive the resolved doorway immediately', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
 
     await page.goto(landingUrl, { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByRole('heading', { name: 'Design without a design team.' })).toBeVisible();
-    await expect(page.locator('#heroCaption')).toHaveCSS('opacity', '1');
-    await expect(page.getByRole('link', { name: /Try PARÉ/ }).first()).toBeVisible();
+    await expect(page.locator('.cwCell.target')).toHaveText(['P', 'A', 'R', 'É']);
+    await expect(
+      page.getByRole('heading', { name: 'Design without a design team.' }),
+    ).toBeVisible();
+    await expect(page.getByRole('link', { name: /Enter PARÉ/ }).first()).toBeVisible();
     await expectNoHorizontalOverflow(page);
   });
 
-  test('[P0] Try PARÉ grants one Studio admission and navigates to the Studio route', async ({ page }) => {
+  test('[P0] Enter PARÉ opens the Studio and starts the walkthrough', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(landingUrl, { waitUntil: 'domcontentloaded' });
 
-    await page.getByRole('link', { name: /Try PARÉ/ }).first().click();
+    await page.getByRole('link', { name: /Enter PARÉ/ }).first().click();
 
     await page.waitForURL(/\/projects(?:\?|$)/, { timeout: 15_000 });
     expect(page.url()).toContain('pare-entry=1');
 
     const diffusion = page.getByTestId('pare-diffusion-toggle');
     await expect(diffusion).toBeVisible({ timeout: 15_000 });
-
-    // The real Studio route is the Projects browser. The hidden Home view may
-    // remain mounted for SPA state, so do not mistake that for an entry failure.
     await expect(page.locator('.od-loading-shell')).toHaveCount(0, { timeout: 20_000 });
     await expect(page.getByText('Projects', { exact: true }).first()).toBeVisible({ timeout: 20_000 });
     await expect(page.getByRole('button', { name: /New project/i })).toBeVisible({ timeout: 20_000 });
+
+    await expect(page.getByRole('dialog', { name: 'PARÉ Studio tour' })).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByRole('heading', { name: 'Start with the work.' })).toBeVisible();
+    await page.getByRole('button', { name: 'Next' }).click();
+    await expect(page.getByRole('heading', { name: 'Everything stays close.' })).toBeVisible();
 
     const gateState = await page.evaluate(() => ({
       effectPassed: sessionStorage.getItem('pare:effect-passed'),
