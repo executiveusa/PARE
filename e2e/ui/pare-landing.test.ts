@@ -61,6 +61,10 @@ test.describe('PARÉ public doorway', () => {
 
     await page.getByRole('link', { name: /See how it works/ }).click();
     await expect(page.locator('#product-proof')).toBeInViewport();
+    await expect(page.getByText('INPUT', { exact: true })).toBeVisible();
+    await expect(page.getByText('PARÉ ACTION', { exact: true })).toBeVisible();
+    await expect(page.getByText('RESULT', { exact: true })).toBeVisible();
+    await expect(page.getByText('#11 · draft', { exact: true })).toBeVisible();
 
     const productPrecedesManifesto = await page.evaluate(() => {
       const product = document.querySelector('#product-proof');
