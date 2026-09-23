@@ -138,9 +138,27 @@ test.describe('PARÉ public doorway', () => {
     await expect(page.getByRole('button', { name: /New project/i })).toBeVisible({ timeout: 20_000 });
 
     await expect(page.getByRole('dialog', { name: 'PARÉ Studio tour' })).toBeVisible({ timeout: 20_000 });
-    await expect(page.getByRole('heading', { name: 'Start with the work.' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Start a project.' })).toBeVisible();
+    await expect(page.locator('[data-testid="designs-new-project"], [data-testid="designs-empty-new-project"]').first()).toBeVisible();
+
     await page.getByRole('button', { name: 'Next' }).click();
-    await expect(page.getByRole('heading', { name: 'Everything stays close.' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Everything stays within reach.' })).toBeVisible();
+    await expect(page.getByTestId('entry-nav-search')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Next' }).click();
+    await expect(page.getByRole('heading', { name: 'Tell PARÉ what you want to make.' })).toBeVisible();
+    await expect(page.getByTestId('home-hero-input')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Next' }).click();
+    await expect(page.getByRole('heading', { name: 'Keep the work on-brand.' })).toBeVisible();
+    await expect(page.getByTestId('home-hero-design-system-trigger')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Next' }).click();
+    await expect(page.getByRole('heading', { name: 'Start with the work.' })).toBeVisible();
+    await page.getByRole('button', { name: 'Start working' }).click();
+    await expect(page.getByRole('dialog', { name: 'PARÉ Studio tour' })).toHaveCount(0);
+    await expect(page.getByTestId('home-hero-input')).toBeFocused();
+    await expect(page.getByRole('button', { name: 'Show PARÉ tour' })).toBeVisible();
 
     const gateState = await page.evaluate(() => ({
       effectPassed: sessionStorage.getItem('pare:effect-passed'),
