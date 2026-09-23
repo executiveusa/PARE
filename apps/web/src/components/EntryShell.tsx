@@ -2015,7 +2015,11 @@ export function EntryShell({
           </div>
         </main>
       </div>
-      <PareStudioTour />
+      <PareStudioTour
+        view={view}
+        onViewChange={changeView}
+        onRailOpenChange={setRailOpen}
+      />
       <NewProjectModal
         open={newProjectOpen}
         initialTab={newProjectInitialTab}
