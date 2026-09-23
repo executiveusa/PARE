@@ -78,7 +78,10 @@ describe('PARÉ preview crossword hero', () => {
     expect(html).toContain('.hero{position:relative;height:154svh}');
     expect(html).toContain('.hero{height:132svh}');
     expect(html).toContain('id="product-proof"');
-    expect(html).toContain('PARÉ Studio · interface preview');
+    expect(html).toContain('Browser-tested product path');
+    expect(html).toContain('PREVIEW PROOF');
+    expect(html).toContain('1440×900 · PASS');
+    expect(html).toContain('390×844 · PASS');
     expect(html).not.toContain('<section class="question">');
   });
 
