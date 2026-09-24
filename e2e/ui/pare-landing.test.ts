@@ -159,6 +159,8 @@ test.describe('PARÉ public doorway', () => {
     await expect(page.getByRole('dialog', { name: 'PARÉ Studio tour' })).toHaveCount(0);
     await expect(page.getByTestId('home-hero-input')).toBeFocused();
     await expect(page.getByRole('button', { name: 'Show PARÉ tour' })).toBeVisible();
+    const projectTourPending = await page.evaluate(() => sessionStorage.getItem('pare:project-tour-pending'));
+    expect(projectTourPending).toBe('1');
 
     const gateState = await page.evaluate(() => ({
       effectPassed: sessionStorage.getItem('pare:effect-passed'),
@@ -171,5 +173,21 @@ test.describe('PARÉ public doorway', () => {
       path: 'ui/reports/test-results/pare-studio-after-entry.png',
       fullPage: true,
     });
+  });
+});
+
+
+test.describe('PARÉ opened-project tour contract', () => {
+  test('[P1] entry tour hands off a one-shot project walkthrough marker', async ({ page }) => {
+    await page.goto(landingUrl, { waitUntil: 'domcontentloaded' });
+    await page.evaluate(() => {
+      sessionStorage.setItem('pare:project-tour-pending', '1');
+      sessionStorage.removeItem('pare:project-tour-seen');
+    });
+    const state = await page.evaluate(() => ({
+      pending: sessionStorage.getItem('pare:project-tour-pending'),
+      seen: sessionStorage.getItem('pare:project-tour-seen'),
+    }));
+    expect(state).toEqual({ pending: '1', seen: null });
   });
 });
