@@ -111,6 +111,7 @@ import {
 import { LibrarySection } from './LibrarySection';
 import { UpdaterPopup } from './UpdaterPopup';
 import { WhatsNewPopup } from './WhatsNewPopup';
+import { PareStudioTour } from './PareStudioTour';
 import { DeepSeekHarnessSetupDialog } from './DeepSeekHarnessSetupDialog';
 import { AmrBalanceDialog } from './AmrBalanceDialog';
 import { installDeepSeekHarnessCompanion } from '../providers/agent-companion';
@@ -2014,6 +2015,11 @@ export function EntryShell({
           </div>
         </main>
       </div>
+      <PareStudioTour
+        view={view}
+        onViewChange={changeView}
+        onRailOpenChange={setRailOpen}
+      />
       <NewProjectModal
         open={newProjectOpen}
         initialTab={newProjectInitialTab}

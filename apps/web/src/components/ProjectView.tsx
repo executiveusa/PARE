@@ -254,6 +254,7 @@ import {
 import { historyWithApiAttachmentContext } from '../api-attachment-context';
 import { filterImplicitProducedFiles } from '../produced-files';
 import { AvatarMenu } from './AvatarMenu';
+import { PareProjectTour } from './PareProjectTour';
 import { Icon } from './Icon';
 import { useWorkspaceTabsDockRef } from './workspaceTabsDock';
 import { localizePluginTitle } from './plugins-home/localization';
@@ -11453,6 +11454,7 @@ export function ProjectView({
         enabled={critiqueTheaterEnabled}
         workspaceContext={projectRunWorkspaceContext}
       />
+      <PareProjectTour />
       {/* ProjectActionsToolbar removed per 00efdcba — hide finalize-design
           toolbar from project header. Restore from cf1cd9bb if product
           wants the Finalize + Continue-in-CLI buttons back in the chrome. */}

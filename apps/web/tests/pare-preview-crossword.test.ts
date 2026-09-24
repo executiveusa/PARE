@@ -56,4 +56,50 @@ describe('PARÉ preview crossword hero', () => {
     expect(clientApp).toContain("import { DiffusionOverlay } from '../../src/components/DiffusionOverlay'");
     expect(clientApp).toContain('<DiffusionOverlay />');
   });
+
+  it('brings product truth and the primary action into the opening experience', () => {
+    expect(html).toContain('Owner-controlled AI Studio');
+    expect(html).toContain('Turn an idea into finished digital work without managing the models, agents and infrastructure underneath it.');
+    expect(html).toContain('>Try PARÉ ↗</a>');
+    expect(html).toContain('href="#product-proof">See how it works ↓</a>');
+  });
+
+  it('reduces navigation and removes unverified social-platform root links', () => {
+    expect(html).toContain('<a class="mark" href="#top">PARÉ</a>');
+    expect(html).toContain('class="primaryNav"');
+    expect(html).not.toContain('>Journal</a></div></nav>');
+    expect(html).not.toContain('https://www.instagram.com/');
+    expect(html).not.toContain('https://www.facebook.com/');
+    expect(html).not.toContain('https://dribbble.com/');
+    expect(html).not.toContain('https://www.behance.net/');
+  });
+
+  it('shortens the mandatory doorway and labels the static Studio frame honestly', () => {
+    expect(html).toContain('.hero{position:relative;height:154svh}');
+    expect(html).toContain('.hero{height:132svh}');
+    expect(html).toContain('id="product-proof"');
+    expect(html).toContain('Browser-tested product path');
+    expect(html).toContain('PREVIEW PROOF');
+    expect(html).toContain('1440×900 · PASS');
+    expect(html).toContain('390×844 · PASS');
+    expect(html).not.toContain('<section class="question">');
+  });
+
+  it('puts product before philosophy and removes duplicate full-screen brand explanation', () => {
+    expect(html).not.toContain('class="statement"');
+    expect(html.indexOf('id="product-proof"')).toBeLessThan(html.indexOf('id="manifesto"'));
+    expect(html).toContain('PARÉ · pare /per/ · verb · to reduce by removing what is unnecessary.');
+    expect(html).toContain('.manifesto{position:relative;min-height:118svh}');
+  });
+
+  it('compresses lower-page architecture and conversion sections without deleting access modes', () => {
+    expect(html).toContain('.interfaces{min-height:72svh');
+    expect(html).toContain('.final{min-height:72svh');
+    expect(html).toContain('Studio for people.<br>One system for agents.');
+    expect(html).toContain('<b>Studio</b>');
+    expect(html).toContain('<b>API</b>');
+    expect(html).toContain('<b>MCP</b>');
+    expect(html).toContain('<b>CLI</b>');
+  });
+
 });

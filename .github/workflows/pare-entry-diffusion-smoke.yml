@@ -5,10 +5,12 @@ on:
     paths:
       - 'apps/web/public/pare-preview/**'
       - 'apps/web/public/_redirects'
-      - 'apps/web/app/[[...slug]]/client-app.tsx'
+      - 'apps/web/app/**/client-app.tsx'
       - 'apps/web/src/components/DiffusionOverlay.tsx'
       - 'apps/web/tests/diffusion*.test.ts*'
       - 'apps/web/tests/pare-preview-crossword.test.ts'
+      - 'e2e/ui/pare-landing.test.ts'
+      - 'e2e/package.json'
       - '.github/workflows/pare-entry-diffusion-smoke.yml'
   # Same-repo CI currently resolves through the private Nexu runner fleet.
   # Keep this bounded release smoke independently runnable on GitHub-hosted
@@ -19,7 +21,7 @@ on:
     paths:
       - 'apps/web/public/pare-preview/**'
       - 'apps/web/public/_redirects'
-      - 'apps/web/app/[[...slug]]/client-app.tsx'
+      - 'apps/web/app/**/client-app.tsx'
       - 'apps/web/src/components/DiffusionOverlay.tsx'
       - 'apps/web/tests/diffusion*.test.ts*'
       - 'apps/web/tests/pare-preview-crossword.test.ts'
@@ -46,8 +48,9 @@ jobs:
         uses: ./.github/actions/setup-workspace
 
       - name: Run focused PARÉ tests
+        working-directory: apps/web
         run: >-
-          pnpm --filter @open-design/web test --
+          pnpm exec vitest run -c vitest.config.ts
           tests/pare-preview-crossword.test.ts
           tests/diffusion.test.ts
           tests/diffusion-overlay-contract.test.ts
@@ -63,7 +66,58 @@ jobs:
           grep -F '/  /pare-preview/  302!' apps/web/public/_redirects
           grep -F 'id="studio-entry"' apps/web/public/pare-preview/index.html
           grep -F 'data-enter-studio' apps/web/public/pare-preview/index.html
-          grep -F "const ENTRY_GATE_KEY = 'pare:effect-passed'" 'apps/web/app/[[...slug]]/client-app.tsx'
-          grep -F 'sessionStorage.removeItem(ENTRY_GATE_KEY)' 'apps/web/app/[[...slug]]/client-app.tsx'
-          grep -F '<DiffusionOverlay />' 'apps/web/app/[[...slug]]/client-app.tsx'
+          grep -F "const ENTRY_GATE_KEY = 'pare:effect-passed'" 'apps/web/app/**/client-app.tsx'
+          grep -F 'sessionStorage.removeItem(ENTRY_GATE_KEY)' 'apps/web/app/**/client-app.tsx'
+          grep -F '<DiffusionOverlay />' 'apps/web/app/**/client-app.tsx'
           grep -F 'data-testid="pare-diffusion-toggle"' apps/web/src/components/DiffusionOverlay.tsx
+
+
+  playwright:
+    name: PARÉ landing browser walk
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      PARE_LANDING_URL: https://deploy-preview-${{ github.event.pull_request.number }}--pauli-para.netlify.app/pare-preview/
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-workspace
+
+      - name: Install Chromium
+        run: pnpm --filter @open-design/e2e exec playwright install --with-deps chromium
+
+      - name: Wait for Netlify preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 40); do
+            code="$(curl -L -sS -o /dev/null -w '%{http_code}' "$PARE_LANDING_URL" || true)"
+            if [ "$code" = "200" ]; then
+              echo "Preview ready: $PARE_LANDING_URL"
+              exit 0
+            fi
+            echo "Attempt $attempt/40 -> HTTP $code"
+            sleep 10
+          done
+          echo "::error::PARÉ preview did not become ready"
+          exit 1
+
+      - name: Walk PARÉ in Chromium
+        env:
+          OD_PLAYWRIGHT_WORKERS: "1"
+        run: pnpm --filter @open-design/e2e test:ui:pare-landing
+
+      - name: Upload Playwright evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pare-landing-playwright-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            e2e/ui/reports/playwright-html-report
+            e2e/ui/reports/test-results
+            e2e/ui/reports/results.json
+            e2e/ui/reports/junit.xml
+          if-no-files-found: ignore
+          retention-days: 7
