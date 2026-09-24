@@ -84,7 +84,7 @@ export function PareStudioTour({ view, onViewChange, onRailOpenChange }: Props) 
   const [open, setOpen] = useState(shouldStart);
   const [index, setIndex] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
-  const step = steps[index];
+  const step = steps[index] ?? steps[0]!;
 
   useEffect(() => {
     if (!open) return;
