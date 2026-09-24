@@ -129,6 +129,7 @@ export function PareStudioTour({ view, onViewChange, onRailOpenChange }: Props) 
 
   function finish(focusWork = false) {
     sessionStorage.setItem(STORAGE_KEY, '1');
+    if (focusWork) sessionStorage.setItem('pare:project-tour-pending', '1');
     onRailOpenChange(false);
     setOpen(false);
     if (focusWork) {
