@@ -220,3 +220,8 @@ Do not expose the privileged runtime publicly without authentication.
 PARÉ is derived from an Apache-2.0 upstream project. Attribution, notices, and technical compatibility names remain where required; they are not presented as PARÉ product branding.
 
 See [`LICENSE`](LICENSE) and the repository history for upstream attribution and notices.
+
+
+## MAXX SUITE integration map (documentation only)
+
+See [the source-grounded ICM capability graph](docs/icm/GRAPH.md) for module ownership, entry points, tests and the proposed tenant-scoped MAXX integration boundary. This is an architecture map, not evidence of a deployed or production-approved integration.
