@@ -3814,6 +3814,7 @@ function homeHeroChipDescription(chipId: string, t: ReturnType<typeof useT>): st
     case 'hyperframes': return t('homeHero.chip.hyperframesDesc');
     case 'webgl': return t('homeHero.chip.webglDesc');
     case 'live-artifact': return t('homeHero.chip.liveArtifactDesc');
+    case 'brand-package': return 'Approved logo assets, brand books and ZIP delivery';
     case 'create-brand-kit': return t('homeHero.chip.createBrandKitDesc');
     default: return '';
   }
