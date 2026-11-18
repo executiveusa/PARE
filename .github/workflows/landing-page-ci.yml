@@ -69,7 +69,8 @@ concurrency:
 jobs:
   validate:
     name: Validate landing page
-    runs-on: ubuntu-latest
+    # Playwright's pinned browser version does not support ubuntu-26.04 yet.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
 
     steps:
