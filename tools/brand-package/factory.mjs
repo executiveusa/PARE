@@ -15,7 +15,15 @@ const socials = [
 ];
 const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const validColor = c=>typeof c==="string" && /^#[0-9a-fA-F]{6}$/.test(c);
-const xmlSafe=s=>!/<!DOCTYPE|<!ENTITY|<script\b|<foreignObject\b|\bon\w+\s*=|(?:href|src)\s*=\s*["'](?:https?:|data:|\/\/)|<image\b|<iframe\b/i.test(s);
+function xmlSafe(s) {
+ // Intentionally conservative: the exporter handles reviewed, self-contained logo art.
+ // Unknown SVG animation, HTML/CSS, remote links or active content fail closed.
+ if (/<\s*(?:!|\?|script\b|foreignObject\b|image\b|iframe\b|a\b|style\b|animate\w*\b|set\b|feImage\b)/i.test(s)) return false;
+ if (/\bon\w+\s*=|(?:javascript|vbscript|data|file)\s*:|@import\b|url\s*\(|\bxml:base\s*=/i.test(s)) return false;
+ const links=[...s.matchAll(/\b(?:href|src)\s*=\s*(["'])(.*?)\1/gi)];
+ if (/\b(?:href|src)\s*=\s*(?!["'])/i.test(s)) return false;
+ return links.every(m=>/^#[A-Za-z_][\w:.-]*$/.test(m[2]));
+}
 function parseMaster(svg) {
  if(typeof svg!=="string"||!/<svg[\s>]/i.test(svg)||!xmlSafe(svg)) throw Error("Unsafe or absent SVG master");
  const box=svg.match(/<svg\b[^>]*\bviewBox\s*=\s*["']\s*([0-9.\s-]+)\s*["']/i);
