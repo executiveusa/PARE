@@ -9,6 +9,22 @@ const brand={name:"Test Brand",description:"An original test identity",colors:{a
 test("unapproved designs never become deliverables",()=>assert.throws(()=>makePackage({...brand,approval:{status:"draft"}},svg),/approval/));
 test("missing rights confirmation fails closed",()=>assert.throws(()=>makePackage({...brand,rights:{confirmed:false}},svg),/Rights/));
 test("unsafe SVG scripts and external resources fail closed",()=>{assert.throws(()=>makePackage(brand,svg.replace("<path","<script>alert(1)</script><path")),/Unsafe/);assert.throws(()=>makePackage(brand,svg.replace("<path",'<image href="https://example.com/x.png"/><path')),/Unsafe/);});
+test("rejects SVG link schemes and active CSS not covered by basic script checks",()=>{
+ const cases=[
+  '<a href="javascript:alert(1)"></a>',
+  '<a href="&#x6a;avascript:alert(1)"></a>',
+  '<style>@import url(https://example.com/x.css)</style>',
+  '<use href="https://example.com/logo.svg#mark"/>',
+  '<use href=javascript:alert(1)/>',
+  '<animate attributeName="href" values="javascript:alert(1)"/>',
+  '<image href="data:image/png;base64,AAAA"/>',
+  '<foreignObject><div>Unsafe</div></foreignObject>'
+ ];
+ for(const injected of cases){
+  const candidate=svg.replace("<path",injected+"<path");
+  assert.throws(()=>makePackage(brand,candidate),/Unsafe/,"unexpected acceptance: "+injected);
+ }
+});
 test("produces reviewed source, guide, deck, ten social assets, tokens and manifest",()=>{
  const result=makePackage(brand,svg);
  assert.equal(Object.keys(result.files).filter(n=>n.startsWith("05-social/")).length,10);
