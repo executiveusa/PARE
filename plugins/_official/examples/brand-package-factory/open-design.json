@@ -1,0 +1,80 @@
+{
+  "$schema": "https://open-design.ai/schemas/plugin.v1.json",
+  "specVersion": "1.0.0",
+  "name": "example-pare-brand-package-factory",
+  "title": "Brand Package Factory",
+  "version": "0.1.0",
+  "description": "Turn a human-approved PARÉ brand and SVG identity into a portable package of original vector assets, social layouts, brand guidelines and a ZIP with validation receipts.",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "PARÉ",
+    "url": "https://github.com/executiveusa/PARE"
+  },
+  "tags": [
+    "first-party",
+    "brand",
+    "logo",
+    "delivery",
+    "svg",
+    "identity",
+    "approval",
+    "client-handoff"
+  ],
+  "compat": {
+    "agentSkills": [
+      {
+        "path": "./SKILL.md"
+      }
+    ]
+  },
+  "od": {
+    "kind": "scenario",
+    "taskKind": "new-generation",
+    "mode": "prototype",
+    "platform": "desktop",
+    "scenario": "design",
+    "surface": "web",
+    "preview": {
+      "type": "html",
+      "entry": "./index.html"
+    },
+    "useCase": {
+      "query": {
+        "en": "Build a client brand package using the existing PARÉ project. Inspect AGENTS.md, CONTEXT.md, approved brand and rights manifest, and reviewed SVG master. If the creative territory is not approved, stop for human selection. Use pare-svg-engineering and pare-design-delivery, then run the approved Brand Package CLI, review all variants, validate ZIP with the pstack verify-pare-brand-package harness, and produce client delivery receipts. Never call an unchecked export Official or claim PDF/EPS/CMYK support without evidence."
+      },
+      "exampleOutputs": [
+        {
+          "path": "./index.html",
+          "title": "Brand Package Factory workflow"
+        }
+      ]
+    },
+    "context": {
+      "skills": [
+        {
+          "path": "./SKILL.md"
+        }
+      ],
+      "assets": [
+        "./index.html"
+      ]
+    },
+    "pipeline": {
+      "stages": [
+        {
+          "id": "direct",
+          "atoms": [
+            "file-write",
+            "live-artifact"
+          ]
+        }
+      ]
+    },
+    "capabilities": [
+      "prompt:inject",
+      "fs:read",
+      "fs:write",
+      "bash"
+    ]
+  }
+}

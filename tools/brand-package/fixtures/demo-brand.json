@@ -1,0 +1,22 @@
+{
+  "name": "Sample Identity (synthetic)",
+  "description": "Synthetic fixture used to verify packaging only; not a client identity.",
+  "colors": {
+    "accent": "#396EA5",
+    "foreground": "#171714",
+    "background": "#F2EFE7"
+  },
+  "fonts": {
+    "heading": "Arial",
+    "body": "Arial"
+  },
+  "approval": {
+    "status": "approved",
+    "revision": "synthetic-fixture-01",
+    "reviewer": "synthetic-test-reviewer"
+  },
+  "rights": {
+    "confirmed": true,
+    "notes": "All fixture artwork is synthetic test material. Not for clients."
+  }
+}

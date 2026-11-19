@@ -33,6 +33,7 @@ export type ChipScenarioPluginId =
   | DefaultScenarioPluginId
   | 'example-hyperframes'
   | 'example-landing-page-director'
+  | 'example-pare-brand-package-factory'
   // Powered-preview scenarios: real-time GPU / off-main-thread artifacts that
   // render in the cross-origin-isolated "powered preview" iframe. Kept as
   // explicit members — like example-hyperframes — so the rail can name a
@@ -116,6 +117,19 @@ export const HOME_HERO_CHIPS: ReadonlyArray<HomeHeroChip> = [
     // into the Brand Kit tab's extraction flow instead of binding a scenario
     // plugin to the composer.
     action: { kind: 'create-brand-kit' },
+  },
+  {
+    id: 'brand-package',
+    label: 'Create Brand Package',
+    icon: 'swatchbook',
+    group: 'create',
+    description: 'Approved logo packages & brand books',
+    hint: 'Package an approved brand into logos, social assets, guidelines and a portable ZIP. Human approval required.',
+    action: {
+      kind: 'apply-scenario',
+      pluginId: 'example-pare-brand-package-factory',
+      projectKind: 'prototype',
+    },
   },
   {
     id: 'landing-page',
@@ -398,6 +412,7 @@ export function chipsForGroup(group: ChipGroup): HomeHeroChip[] {
 // System) are intentionally excluded.
 export const CREATE_RAIL_ORDER = [
   'landing-page',
+  'brand-package',
   'prototype',
   'deck',
   'image',

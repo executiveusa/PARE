@@ -88,6 +88,10 @@ runs:
 
     - name: Install dependencies
       shell: bash
+      # CI runners have no CUDA GPU. onnxruntime-node@1.21.1 otherwise attempts
+      # an unavailable optional Linux GPU download (HTTP 404) before any tests.
+      env:
+        npm_config_onnxruntime_node_install_cuda: skip
       run: pnpm install --frozen-lockfile
 
     - name: Save pnpm store

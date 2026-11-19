@@ -48,6 +48,9 @@ jobs:
         run: corepack enable
 
       - name: Install
+        # CPU-only catalog CI needs ONNX's bundled CPU binary, not optional CUDA assets.
+        env:
+          npm_config_onnxruntime_node_install_cuda: skip
         run: pnpm install --frozen-lockfile
 
       - name: Typecheck tools-release
