@@ -1,0 +1,53 @@
+name: brand-package-verification
+
+on:
+  pull_request:
+    paths:
+      - 'tools/brand-package/**'
+      - 'skills/pare-brand-package-factory/**'
+      - '.agents/skills/verify-pare-brand-package/**'
+      - 'plugins/_official/examples/brand-package-factory/**'
+      - 'apps/web/src/components/home-hero/chips.ts'
+      - 'apps/web/src/components/home-hero/chip-labels.ts'
+      - 'apps/web/src/components/HomeHero.tsx'
+      - '.github/workflows/brand-package-verification.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/brand-package/**'
+      - 'skills/pare-brand-package-factory/**'
+      - '.agents/skills/verify-pare-brand-package/**'
+      - 'plugins/_official/examples/brand-package-factory/**'
+      - '.github/workflows/brand-package-verification.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify brand-package user journey
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6.0.2
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - name: Doctor
+        run: |
+          node --version
+          python3 --version
+          test -f tools/brand-package/fixtures/demo-brand.json
+          test -f tools/brand-package/fixtures/demo-master.svg
+      - name: Unit and negative-path tests
+        run: node --test tools/brand-package/factory.test.mjs
+      - name: Verify CLI end-to-end with independent archive reader
+        run: node tools/brand-package/verify.mjs
+      - name: Preserve independent synthetic proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pare-brand-package-proof
+          path: tools/brand-package/evidence/brand-package-proof.json
+          if-no-files-found: warn
